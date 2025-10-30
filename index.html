@@ -69,9 +69,9 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <!-- ★★★ sortable-header 클래스 및 span.sort-indicator 추가 ★★★ -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                장비명<span class="sort-indicator"></span>
+                            <!-- ★★★ 'No' 열 추가 (정렬 기능 없음) ★★★ -->
+                            <th scope="col" class="w-16 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                No
                             </th>
                             <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 장비번호<span class="sort-indicator"></span>
@@ -88,7 +88,8 @@
                             <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 차기 검교정일<span class="sort-indicator"></span>
                             </th>
-                            <th scope="col" "sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- ★★★ '담당자' 열 class= 오타 수정 ★★★ -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 담당자<span class="sort-indicator"></span>
                             </th>
                             <!-- '관리' 열은 정렬에서 제외 -->
@@ -100,8 +101,10 @@
                     <!-- ID 'equipmentTableBody' -->
                     <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
                         
-                        <!-- 예시 데이터 1: data-row 클래스 추가, contenteditable 제거 -->
+                        <!-- 예시 데이터 1: 'No' 열 <td> 추가 -->
                         <tr class="data-row">
+                            <!-- ★★★ 'No' <td> 추가 ★★★ -->
+                            <td class="row-number-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">가스 감지기</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">SAF-GAS-001</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">ASSET-1001</td>
@@ -114,10 +117,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                 <button class="delete-btn text-red-600 hover:text-red-900">삭제</button>
                             </td>
-                        </tr>
-
-                        <!-- 예시 데이터 2 -->
+                        <!-- 예시 데이터 2: 'No' 열 <td> 추가 -->
                         <tr class="data-row">
+                            <!-- ★★★ 'No' <td> 추가 ★★★ -->
+                            <td class="row-number-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">소음 측정기</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">SAF-SND-002</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">ASSET-1002</td>
@@ -130,10 +133,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                 <button class="delete-btn text-red-600 hover:text-red-900">삭제</button>
                             </td>
-                        </tr>
-
-                        <!-- 예시 데이터 3 -->
+                        <!-- 예시 데이터 3: 'No' 열 <td> 추가 -->
                         <tr class="data-row">
+                            <!-- ★★★ 'No' <td> 추가 ★★★ -->
+                            <td class="row-number-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">전기 절연 장갑</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">SAF-EGV-003</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">ASSET-1003</td>
@@ -146,10 +149,10 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                 <button class="delete-btn text-red-600 hover:text-red-900">삭제</button>
                             </td>
-                        </tr>
-
-                        <!-- 예시 데이터 4 -->
+                        <!-- 예시 데이터 4: 'No' 열 <td> 추가 -->
                         <tr class="data-row">
+                            <!-- ★★★ 'No' <td> 추가 ★★★ -->
+                            <td class="row-number-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">안전모 (특급)</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">SAF-HMT-004</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">ASSET-1004</td>
@@ -248,6 +251,20 @@
 
         let currentRow = null; // 현재 편집 중인 행(TR)을 저장할 변수
 
+        // ★★★ 신규 기능: 'No' 열 번호 자동 갱신 함수 ★★★
+        function updateRowNumbers() {
+            const rows = tableBody.querySelectorAll('tr.data-row');
+            rows.forEach((row, index) => {
+                // 첫 번째 <td> (No 열)을 찾아서 텍스트를 업데이트
+                const cell = row.querySelector('.row-number-cell');
+                if (cell) {
+                    cell.innerText = index + 1;
+                }
+            });
+        }
+        // ★★★ 'No' 갱신 함수 끝 ★★★
+
+
         // ★★★ 신규 기능: 테이블 정렬 ★★★
         document.querySelectorAll('th.sortable-header').forEach(header => {
             header.addEventListener('click', () => {
@@ -289,6 +306,9 @@
                 // 4. 정렬된 행을 다시 tbody에 순서대로 추가
                 // (appendChild는 기존 요소를 이동시킵니다)
                 rows.forEach(row => tbody.appendChild(row));
+
+                // ★★★ 정렬 후 'No' 열 갱신 ★★★
+                updateRowNumbers();
             });
         });
         // ★★★ 정렬 기능 끝 ★★★
@@ -312,14 +332,15 @@
             currentRow = row; // 현재 행 저장
             const cells = row.getElementsByTagName('td');
             
+            // ★★★ 'No' 열이 추가(cells[0])되어 인덱스 +1 씩 수정 ★★★
             // 폼에 현재 데이터 채우기
-            document.getElementById('editName').value = cells[0].innerText;
-            document.getElementById('editNumber').value = cells[1].innerText;
-            document.getElementById('editAsset').value = cells[2].innerText;
-            document.getElementById('editStatus').value = cells[3].innerText; // span 안의 텍스트
-            document.getElementById('editLastDate').value = cells[4].innerText;
-            document.getElementById('editNextDate').value = cells[5].innerText;
-            document.getElementById('editManager').value = cells[6].innerText;
+            document.getElementById('editName').value = cells[1].innerText;
+            document.getElementById('editNumber').value = cells[2].innerText;
+            document.getElementById('editAsset').value = cells[3].innerText;
+            document.getElementById('editStatus').value = cells[4].innerText; // span 안의 텍스트
+            document.getElementById('editLastDate').value = cells[5].innerText;
+            document.getElementById('editNextDate').value = cells[6].innerText;
+            document.getElementById('editManager').value = cells[7].innerText;
 
             editModal.classList.remove('hidden'); // 모달 보이기
         }
@@ -334,6 +355,8 @@
         addRowBtn.addEventListener('click', function() {
             const newRowHTML = `
                 <tr class="data-row">
+                    <!-- ★★★ 'No' <td> 추가 ★★★ -->
+                    <td class="row-number-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500"></td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">(장비명 입력)</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">(장비번호 입력)</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">(자산번호 입력)</td>
@@ -349,14 +372,21 @@
                 </tr>
             `;
             tableBody.insertAdjacentHTML('beforeend', newRowHTML);
+
+            // ★★★ 행 추가 후 'No' 열 갱신 ★★★
+            updateRowNumbers();
         });
 
         // 테이블 영역 클릭 이벤트 (이벤트 위임)
         tableBody.addEventListener('click', function(e) {
             // '삭제' 버튼을 클릭한 경우
-            if (e.target.classList.contains('delete-btn')) {
+            if (e.target.classList.contents('delete-btn')) {
                 const row = e.target.closest('tr'); // 클릭한 버튼이 속한 행(TR)
                 row.remove(); // 행 삭제
+                
+                // ★★★ 행 삭제 후 'No' 열 갱신 ★★★
+                updateRowNumbers();
+
                 return; // 모달이 열리지 않도록 여기서 중단
             }
 
@@ -379,22 +409,25 @@
             if (currentRow) {
                 const cells = currentRow.getElementsByTagName('td');
                 
+                // ★★★ 'No' 열이 추가(cells[0])되어 인덱스 +1 씩 수정 ★★★
                 // 폼의 새 데이터로 테이블 셀(TD) 내용 업데이트
-                cells[0].innerText = document.getElementById('editName').value;
-                cells[1].innerText = document.getElementById('editNumber').value;
-                cells[2].innerText = document.getElementById('editAsset').value;
+                cells[1].innerText = document.getElementById('editName').value;
+                cells[2].innerText = document.getElementById('editNumber').value;
+                cells[3].innerText = document.getElementById('editAsset').value;
                 // 상태 셀은 스타일(span)을 다시 생성
-                cells[3].innerHTML = getStatusSpan(document.getElementById('editStatus').value);
-                cells[4].innerText = document.getElementById('editLastDate').value;
-                cells[5].innerText = document.getElementById('editNextDate').value;
-                cells[6].innerText = document.getElementById('editManager').value;
+                cells[4].innerHTML = getStatusSpan(document.getElementById('editStatus').value);
+                cells[5].innerText = document.getElementById('editLastDate').value;
+                cells[6].innerText = document.getElementById('editNextDate').value;
+                cells[7].innerText = document.getElementById('editManager').value;
 
                 closeModal(); // 모달 닫기
             }
         });
+
+        // ★★★ 페이지 로드 시 'No' 열 초기화 ★★★
+        document.addEventListener('DOMContentLoaded', updateRowNumbers);
     </script>
 
 </body>
 </html>
-
 
