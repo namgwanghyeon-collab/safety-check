@@ -21,6 +21,24 @@
             background-color: #f9fafb; /* 매우 연한 회색 */
             cursor: pointer;
         }
+        /* ★★★ 정렬 기능용 스타일 ★★★ */
+        /* 정렬 가능한 헤더 스타일 */
+        th.sortable-header {
+            cursor: pointer;
+            user-select: none; /* 텍스트 드래그 방지 */
+            position: relative;
+        }
+        th.sortable-header:hover {
+            background-color: #e5e7eb; /* 연한 회색 */
+        }
+        /* 정렬 화살표 */
+        .sort-indicator {
+            display: inline-block;
+            width: 1em; /* 너비 고정 */
+            margin-left: 6px;
+            color: #9ca3af; /* 회색 */
+            font-size: 0.65rem; /* 아이콘 크기 */
+        }
     </style>
 </head>
 <body class="bg-gray-100">
@@ -51,14 +69,32 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">장비명</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">장비번호</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">자산번호</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">검교정 상태</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">최근 검교정일</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">차기 검교정일</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">담당자</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">관리</th>
+                            <!-- ★★★ sortable-header 클래스 및 span.sort-indicator 추가 ★★★ -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                장비명<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                장비번호<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                자산번호<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                검교정 상태<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                최근 검교정일<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                차기 검교정일<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" "sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                담당자<span class="sort-indicator"></span>
+                            </th>
+                            <!-- '관리' 열은 정렬에서 제외 -->
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                관리
+                            </th>
                         </tr>
                     </thead>
                     <!-- ID 'equipmentTableBody' -->
@@ -212,6 +248,51 @@
 
         let currentRow = null; // 현재 편집 중인 행(TR)을 저장할 변수
 
+        // ★★★ 신규 기능: 테이블 정렬 ★★★
+        document.querySelectorAll('th.sortable-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const table = header.closest('table');
+                const tbody = table.querySelector('tbody');
+                // 클릭된 헤더의 열 인덱스(0, 1, 2...)를 찾습니다.
+                const columnIndex = Array.from(header.parentNode.children).indexOf(header);
+                // 현재 정렬 방향을 읽어오거나 'desc'로 기본 설정 (다음에 'asc'가 되도록)
+                const currentDirection = header.dataset.sortDirection || 'desc';
+                const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+
+                // 1. 모든 헤더의 정렬 방향 초기화 및 화살표 제거
+                document.querySelectorAll('th.sortable-header').forEach(h => {
+                    h.dataset.sortDirection = 'desc'; // 다른 헤더는 초기화
+                    h.querySelector('.sort-indicator').textContent = ''; // 다른 화살표 제거
+                });
+
+                // 2. 현재 클릭된 헤더의 방향 설정 및 화살표 표시
+                header.dataset.sortDirection = newDirection;
+                header.querySelector('.sort-indicator').textContent = newDirection === 'asc' ? '▲' : '▼'; // 오름차순/내림차순 표시
+
+                // 3. 테이블 행 정렬
+                const rows = Array.from(tbody.querySelectorAll('tr.data-row'));
+                rows.sort((rowA, rowB) => {
+                    // 각 행의 해당 열(columnIndex)에 있는 셀(TD)의 텍스트를 가져옵니다.
+                    const cellA = rowA.querySelectorAll('td')[columnIndex].innerText.toLowerCase();
+                    const cellB = rowB.querySelectorAll('td')[columnIndex].innerText.toLowerCase();
+
+                    // 텍스트 비교
+                    if (cellA < cellB) {
+                        return newDirection === 'asc' ? -1 : 1;
+                    }
+                    if (cellA > cellB) {
+                        return newDirection === 'asc' ? 1 : -1;
+                    }
+                    return 0; // 같으면 순서 변경 없음
+                });
+
+                // 4. 정렬된 행을 다시 tbody에 순서대로 추가
+                // (appendChild는 기존 요소를 이동시킵니다)
+                rows.forEach(row => tbody.appendChild(row));
+            });
+        });
+        // ★★★ 정렬 기능 끝 ★★★
+
         // 상태 텍스트에 따라 올바른 HTML <span>을 반환하는 함수
         function getStatusSpan(statusText) {
             statusText = statusText.trim();
@@ -315,4 +396,5 @@
 
 </body>
 </html>
+
 
