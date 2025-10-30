@@ -32,6 +32,13 @@
             </h1>
         </header>
 
+        <!-- 버튼 영역 -->
+        <div class="mb-4 flex justify-end">
+            <button id="addRowBtn" class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
+                + 신규 장비 추가
+            </button>
+        </div>
+
         <!-- 메인 컨텐츠: 현황판 카드 -->
         <main class="bg-white rounded-lg shadow-xl overflow-hidden">
             
@@ -65,7 +72,8 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <!-- ★★★ ID 'equipmentTableBody' 추가 ★★★ -->
+                    <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
                         
                         <!-- 예시 데이터 1: 정상 -->
                         <tr>
@@ -183,12 +191,57 @@
 
         </main>
 
+        <!-- ★★★ 참고 메시지 추가 ★★★ -->
+        <div class="mt-4 p-4 bg-yellow-100 text-yellow-800 rounded-lg text-center">
+            <p><strong class="font-semibold">참고:</strong> 현재 페이지에서 수정하거나 추가한 내용은 임시이며, 페이지를 새로고침하면 사라집니다. (영구 저장 기능 없음)</p>
+        </div>
+
         <!-- 푸터 -->
         <footer class="text-center text-gray-500 text-sm mt-8">
             © 2025 [귀사명 입력]. All rights reserved.
         </footer>
 
     </div>
+
+    <!-- ★★★ 신규 행 추가를 위한 JavaScript ★★★ -->
+    <script>
+        document.getElementById('addRowBtn').addEventListener('click', function() {
+            // 1. 테이블의 body 요소를 찾습니다.
+            const tableBody = document.getElementById('equipmentTableBody');
+
+            // 2. 새로 추가할 행(row)의 HTML 템플릿을 만듭니다.
+            const newRowHTML = `
+                <tr class_>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" contenteditable="true">
+                        (장비명 입력)
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" contenteditable="true">
+                        (장비번호 입력)
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" contenteditable="true">
+                        (자산번호 입력)
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm" contenteditable="true">
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                            신규
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" contenteditable="true">
+                        (YYYY-MM-DD)
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" contenteditable="true">
+                        (YYYY-MM-DD)
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700" contenteditable="true">
+                        (담당자 입력)
+                    </td>
+                </tr>
+            `;
+
+            // 3. 테이블 body의 맨 뒤에 새로운 행을 추가합니다.
+            tableBody.insertAdjacentHTML('beforeend', newRowHTML);
+        });
+    </script>
 
 </body>
 </html>
