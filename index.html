@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>안전장비 검교정 현황</title>
-    <!-- Tailwind CSS 로드 -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 커스텀 스타일 (정렬 화살표 등) -->
-    <style>
+    <!-- Tailwind CSS 로드 --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- 커스텀 스타일 (정렬 화살표 등) --><style>
         .sortable-header:hover {
             background-color: #f9fafb; /* bg-gray-50 on hover */
             cursor: pointer;
@@ -18,13 +16,21 @@
             width: 1em;
             color: #9ca3af; /* text-gray-400 */
         }
-        /* 테이블 셀 텍스트 줄바꿈 방지 */
-        .data-row td {
+        /* 테이블 셀 텍스트 줄바꿈 방지 (모달 팝업으로 변경되어 필요성 감소) */
+        /* .data-row td {
             white-space: nowrap;
-        }
+        } */
         .data-row:hover {
             background-color: #f3f4f6; /* bg-gray-100 on hover */
             cursor: pointer;
+        }
+        /* 날짜 임박 강조 스타일 */
+        .highlight-due-date {
+            background-color: #fff7ed; /* bg-orange-50 */
+        }
+        .highlight-due-date .next-due-date-text {
+            color: #ef4444; /* text-red-500 */
+            font-weight: 600;
         }
     </style>
 </head>
@@ -32,22 +38,22 @@
 
     <div class="container mx-auto p-4 md:p-8">
         
-        <!-- 헤더 -->
-        <header class="mb-6 flex justify-between items-center">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+        <!-- 헤더 --><header class="mb-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
                 안전장비 검교정 현황
             </h1>
-            <!-- 신규 장비 추가 버튼 -->
-            <button id="addRowBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-150 ease-in-out">
-                + 신규 장비 추가
-            </button>
+            <!-- 검색 입력란과 신규 장비 추가 버튼 --><div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto">
+                <input type="text" id="searchInput" placeholder="검색 (장비명, 담당자 등)" class="p-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-64">
+                <button id="addRowBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-150 ease-in-out w-full md:w-auto">
+                    + 신규 장비 추가
+                </button>
+            </div>
         </header>
 
-        <!-- 테이블 컨테이너 (모바일 좌우 스크롤) -->
-        <div class="overflow-x-auto bg-white rounded-lg shadow">
+        <!-- 테이블 컨테이너 (모바일 좌우 스크롤) --><div class="overflow-x-auto bg-white rounded-lg shadow">
             <div class="inline-block min-w-full align-middle">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -76,16 +82,14 @@
                             <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 담당자<span class="sort-indicator"></span>
                             </th>
-                            <!-- '관리' 열은 정렬에서 제외 -->
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- '관리' 열은 정렬에서 제외 --><th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 관리
                             </th>
                         </tr>
                     </thead>
                     <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
                         
-                        <!-- 예시 데이터 1 -->
-                        <tr class="data-row">
+                        <!-- 예시 데이터 1 (날짜 강조를 테스트하기 위해 차기 검교정일 조정) --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">가스 감지기</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-GAS-001</td>
@@ -96,15 +100,13 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2024-10-01</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2025-10-01</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">홍길동</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2025-01-15</td> <!-- 1개월 이내 --><td class="px-6 py-4 text-sm text-gray-700">홍길동</td>
                             <td class="px-6 py-4 text-center text-sm">
                                 <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 2 -->
-                        <tr class="data-row">
+                        <!-- 예시 데이터 2 --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">소음 측정기</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-SND-002</td>
@@ -115,15 +117,13 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2023-11-15</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2024-11-15</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">이순신</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2024-12-25</td> <!-- 1개월 이내 --><td class="px-6 py-4 text-sm text-gray-700">이순신</td>
                             <td class="px-6 py-4 text-center text-sm">
                                 <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 3 -->
-                        <tr class="data-row">
+                        <!-- 예시 데이터 3 --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">전기 절연 장갑</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-EGV-003</td>
@@ -141,8 +141,7 @@
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 4 -->
-                        <tr class="data-row">
+                        <!-- 예시 데이터 4 --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">안전모 (특급)</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-HMT-004</td>
@@ -160,29 +159,25 @@
                             </td>
                         </tr>
 
-                        <!-- 데이터가 동적으로 추가됩니다 -->
-                    </tbody>
+                        <!-- 데이터가 동적으로 추가됩니다 --></tbody>
                 </table>
             </div>
         </div>
         
-        <!-- 하단 안내 메시지 -->
-        <footer class="mt-4 text-center text-sm text-gray-500">
+        <!-- 하단 안내 메시지 --><footer class="mt-4 text-center text-sm text-gray-500">
             * '검교정 상태' 값에 따라 색상이 자동 변경됩니다. (예: 정상, 교정 필요, 기한 만료, N/A)<br>
+            * 차기 검교정일이 1개월 이내로 남은 장비는 노란색으로 강조됩니다.<br>
             * 수정/추가/삭제한 내용은 페이지를 새로고침하면 사라집니다. (데이터베이스가 없는 순수 HTML입니다.)<br>
             © 2025 Equipment Status Board
         </footer>
     </div>
 
-    <!-- 편집 모달 (팝업창) -->
-    <div id="editModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+    <!-- 편집 모달 (팝업창) --><div id="editModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
-            <!-- 모달 헤더 -->
-            <div class="border-b px-6 py-4">
+            <!-- 모달 헤더 --><div class="border-b px-6 py-4">
                 <h3 class="text-xl font-semibold text-gray-800">장비 정보 수정</h3>
             </div>
-            <!-- 모달 본문 (폼) -->
-            <form id="editForm" class="p-6 space-y-4">
+            <!-- 모달 본문 (폼) --><form id="editForm" class="p-6 space-y-4">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="editName" class="block text-sm font-medium text-gray-700">장비명</label>
@@ -218,8 +213,7 @@
                     </div>
                 </div>
             </form>
-            <!-- 모달 푸터 (버튼) -->
-            <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+            <!-- 모달 푸터 (버튼) --><div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
                 <button id="closeModalBtn" class="bg-white hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 border border-gray-300 rounded-lg shadow-sm">
                     취소
                 </button>
@@ -230,26 +224,20 @@
         </div>
     </div>
 
-    <!-- ★★★ 모든 JavaScript 로직을 여기에 다시 합쳤습니다 ★★★ -->
-    <script>
-        // DOM 요소(HTML 태그)를 미리 찾아 변수에 저장
-        // 'defer'를 사용하지 않으므로, DOM이 로드된 후 스크립트가 실행되도록
-        // document.addEventListener('DOMContentLoaded', ...)로 전체를 감싸는 것이 좋습니다.
+    <!-- ★★★ 모든 JavaScript 로직을 여기에 다시 합쳤습니다 ★★★ --><script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // DOM 요소들을 이 안에서 찾도록 변경
             const tableBody = document.getElementById('equipmentTableBody');
             const addRowBtn = document.getElementById('addRowBtn');
             const editModal = document.getElementById('editModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const saveChangesBtn = document.getElementById('saveChangesBtn');
-            const editForm = document.getElementById('editForm');
+            const searchInput = document.getElementById('searchInput'); // 검색 입력란 추가
 
-            let currentRow = null; // 현재 편집 중인 행(TR)을 저장할 변수
+            let currentRow = null;
 
-            // --- 1. 'No' 열 번호 자동 갱신 함수 ---
+            // --- 'No' 열 번호 자동 갱신 함수 ---
             function updateRowNumbers() {
-                // null 체크 추가
                 if (!tableBody) return;
                 const rows = tableBody.querySelectorAll('tr.data-row');
                 rows.forEach((row, index) => {
@@ -260,7 +248,7 @@
                 });
             }
 
-            // --- 2. '검교정 상태'에 따라 색상 Span을 생성하는 함수 ---
+            // --- '검교정 상태'에 따라 색상 Span을 생성하는 함수 ---
             function getStatusSpan(statusText) {
                 let bgColor, textColor;
                 switch (statusText.trim()) {
@@ -286,10 +274,44 @@
                         </span>`;
             }
 
-            // --- 3. 테이블 정렬 기능 ---
+            // --- 날짜 임박 강조 및 초기 설정 함수 ---
+            function checkAndHighlightDueDates() {
+                if (!tableBody) return;
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // 시간 제거
+                const oneMonthLater = new Date(today);
+                oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+
+                const rows = tableBody.querySelectorAll('tr.data-row');
+                rows.forEach(row => {
+                    const nextDueDateCell = row.cells[6]; // '차기 검교정일' 열 (0부터 시작)
+                    const nextDueDateText = nextDueDateCell.innerText;
+
+                    // 이전에 적용된 클래스 제거
+                    row.classList.remove('highlight-due-date');
+                    const existingSpan = nextDueDateCell.querySelector('.next-due-date-text');
+                    if (existingSpan) {
+                        nextDueDateCell.innerText = existingSpan.innerText; // 원본 텍스트로 되돌림
+                    }
+                    
+                    if (nextDueDateText && nextDueDateText !== '-' && !isNaN(new Date(nextDueDateText))) {
+                        const nextDueDate = new Date(nextDueDateText);
+                        nextDueDate.setHours(0, 0, 0, 0);
+
+                        // 차기 검교정일이 오늘 이후이고 1개월 이내인 경우
+                        if (nextDueDate >= today && nextDueDate <= oneMonthLater) {
+                            row.classList.add('highlight-due-date');
+                            // 텍스트만 강조하는 span 추가 (편집 모달에 값 넘길 때 방해하지 않기 위해 innerText 유지)
+                            nextDueDateCell.innerHTML = `<span class="next-due-date-text">${nextDueDateText}</span>`;
+                        }
+                    }
+                });
+            }
+
+
+            // --- 테이블 정렬 기능 ---
             document.querySelectorAll('th.sortable-header').forEach(header => {
                 header.addEventListener('click', function() {
-                    // tableBody가 null일 경우를 대비
                     if (!tableBody) return;
 
                     const tbody = tableBody;
@@ -300,11 +322,15 @@
                     
                     document.querySelectorAll('th.sortable-header').forEach(h => {
                         h.setAttribute('data-sort', '');
-                        h.querySelector('.sort-indicator').innerText = '';
+                        const indicator = h.querySelector('.sort-indicator');
+                        if (indicator) indicator.innerText = '';
                     });
 
                     this.setAttribute('data-sort', newDirection);
-                    this.querySelector('.sort-indicator').innerText = newDirection === 'asc' ? '▲' : '▼';
+                    const currentIndicator = this.querySelector('.sort-indicator');
+                    if (currentIndicator) {
+                        currentIndicator.innerText = newDirection === 'asc' ? '▲' : '▼';
+                    }
 
                     const rows = Array.from(tbody.querySelectorAll('tr.data-row'));
                     rows.sort((a, b) => {
@@ -312,21 +338,23 @@
                         const bText = b.cells[column].innerText;
                         
                         if (newDirection === 'asc') {
-                            return aText.localeCompare(bText, 'ko');
+                            return aText.localeCompare(bText, 'ko', { numeric: true }); // 숫자도 고려한 한국어 정렬
                         } else {
-                            return bText.localeCompare(aText, 'ko');
+                            return bText.localeCompare(aText, 'ko', { numeric: true });
                         }
                     });
 
                     rows.forEach(row => tbody.appendChild(row));
                     updateRowNumbers();
+                    checkAndHighlightDueDates(); // 정렬 후에도 날짜 강조 재적용
                 });
             });
 
-            // --- 4. 편집 모달 팝업창 관련 ---
+            // --- 편집 모달 팝업창 관련 ---
 
             // 모달 열기 함수
             function openModal(row) {
+                if (!editModal) return;
                 currentRow = row;
                 const cells = row.getElementsByTagName('td');
                 
@@ -335,13 +363,17 @@
                 document.getElementById('editAsset').value = cells[3].innerText;
                 
                 const statusSpan = cells[4].querySelector('span');
-                document.getElementById('editStatus').value = statusSpan ? statusSpan.innerText : cells[4].innerText;
+                document.getElementById('editStatus').value = statusSpan ? statusSpan.innerText.trim() : cells[4].innerText.trim();
                 
                 document.getElementById('editLastDate').value = cells[5].innerText;
-                document.getElementById('editNextDate').value = cells[6].innerText;
+                
+                // 차기 검교정일이 강조되어 있을 수 있으므로, 원본 텍스트를 가져옴
+                const nextDueDateSpan = cells[6].querySelector('.next-due-date-text');
+                document.getElementById('editNextDate').value = nextDueDateSpan ? nextDueDateSpan.innerText : cells[6].innerText;
+                
                 document.getElementById('editManager').value = cells[7].innerText;
 
-                if (editModal) editModal.classList.remove('hidden');
+                editModal.classList.remove('hidden');
             }
 
             // 모달 닫기 함수
@@ -363,8 +395,8 @@
                             <td class="px-6 py-4 text-sm text-gray-700">
                                 ${getStatusSpan('N/A')}
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2025-01-01</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2026-01-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">${new Date().toISOString().slice(0, 10)}</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().slice(0, 10)}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">(담당자 입력)</td>
                             <td class="px-6 py-4 text-center text-sm">
                                 <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
@@ -373,6 +405,7 @@
                     `;
                     tableBody.insertAdjacentHTML('beforeend', newRowHTML);
                     updateRowNumbers();
+                    checkAndHighlightDueDates(); // 새 행 추가 후 강조 재적용
                 });
             }
 
@@ -385,6 +418,7 @@
                         if (confirm('이 항목을 정말 삭제하시겠습니까?')) {
                             row.remove();
                             updateRowNumbers();
+                            checkAndHighlightDueDates(); // 행 삭제 후 강조 재적용
                         }
                         return;
                     }
@@ -407,10 +441,11 @@
                         cells[3].innerText = document.getElementById('editAsset').value;
                         cells[4].innerHTML = getStatusSpan(document.getElementById('editStatus').value);
                         cells[5].innerText = document.getElementById('editLastDate').value;
-                        cells[6].innerText = document.getElementById('editNextDate').value;
+                        cells[6].innerText = document.getElementById('editNextDate').value; // 날짜 강조를 위해 innerText 유지
                         cells[7].innerText = document.getElementById('editManager').value;
 
                         closeModal();
+                        checkAndHighlightDueDates(); // 저장 후 강조 재적용
                     }
                 });
             }
@@ -429,10 +464,34 @@
                 });
             }
 
-            // --- 5. 페이지 로드 시 초기화 ---
-            // DOMContentLoaded 이벤트 리스너가 이 함수를 감싸고 있으므로
-            // 페이지가 로드되자마자 updateRowNumbers가 실행됩니다.
-            updateRowNumbers();
+            // --- 검색 기능 ---
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function() {
+                    const searchTerm = this.value.toLowerCase(); // 검색어를 소문자로 변환
+                    const rows = tableBody.querySelectorAll('tr.data-row');
+
+                    rows.forEach(row => {
+                        let rowContainsSearchTerm = false;
+                        // 첫 번째 셀 (No)은 검색에서 제외하기 위해 1부터 시작
+                        for (let i = 1; i < row.cells.length; i++) {
+                            const cellText = row.cells[i].innerText.toLowerCase();
+                            if (cellText.includes(searchTerm)) {
+                                rowContainsSearchTerm = true;
+                                break;
+                            }
+                        }
+                        if (rowContainsSearchTerm) {
+                            row.style.display = ''; // 일치하면 보이기
+                        } else {
+                            row.style.display = 'none'; // 일치하지 않으면 숨기기
+                        }
+                    });
+                });
+            }
+
+            // --- 페이지 로드 시 초기화 ---
+            updateRowNumbers(); // 'No' 열 번호 매기기
+            checkAndHighlightDueDates(); // 날짜 강조 초기 실행
 
         }); // DOMContentLoaded 래퍼(wrapper) 종료
     </script>
