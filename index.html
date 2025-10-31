@@ -1,219 +1,442 @@
-// DOM 요소(HTML 태그)를 미리 찾아 변수에 저장
-const tableBody = document.getElementById('equipmentTableBody');
-const addRowBtn = document.getElementById('addRowBtn');
-const editModal = document.getElementById('editModal');
-const closeModalBtn = document.getElementById('closeModalBtn');
-const saveChangesBtn = document.getElementById('saveChangesBtn');
-const editForm = document.getElementById('editForm');
-
-let currentRow = null; // 현재 편집 중인 행(TR)을 저장할 변수
-
-// --- 1. 'No' 열 번호 자동 갱신 함수 ---
-function updateRowNumbers() {
-    // querySelectorAll은 NodeList를 반환하므로 forEach 사용
-    const rows = tableBody.querySelectorAll('tr.data-row');
-    rows.forEach((row, index) => {
-        // 첫 번째 <td> (No 열)을 찾아서 텍스트를 업데이트
-        const cell = row.querySelector('.row-number-cell');
-        if (cell) {
-            cell.innerText = index + 1;
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>안전장비 검교정 현황</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 커스텀 스타일 (정렬 화살표 등) -->
+    <style>
+        .sortable-header:hover {
+            background-color: #f9fafb; /* bg-gray-50 on hover */
+            cursor: pointer;
         }
-    });
-}
+        .sort-indicator {
+            display: inline-block;
+            margin-left: 4px;
+            width: 1em;
+            color: #9ca3af; /* text-gray-400 */
+        }
+        /* 테이블 셀 텍스트 줄바꿈 방지 */
+        .data-row td {
+            white-space: nowrap;
+        }
+        .data-row:hover {
+            background-color: #f3f4f6; /* bg-gray-100 on hover */
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
 
-// --- 2. '검교정 상태'에 따라 색상 Span을 생성하는 함수 ---
-function getStatusSpan(statusText) {
-    let bgColor, textColor;
-    switch (statusText.trim()) {
-        case '정상':
-            bgColor = 'bg-green-100';
-            textColor = 'text-green-800';
-            break;
-        case '교정 필요':
-            bgColor = 'bg-yellow-100';
-            textColor = 'text-yellow-800';
-            break;
-        case '기한 만료':
-            bgColor = 'bg-red-100';
-            textColor = 'text-red-800';
-            break;
-        default: // 'N/A' 또는 그 외
-            bgColor = 'bg-gray-100';
-            textColor = 'text-gray-800';
-            break;
-    }
-    // Tailwind 클래스가 적용된 HTML 문자열 반환
-    return `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${bgColor} ${textColor}">
-                ${statusText}
-            </span>`;
-}
-
-// --- 3. 테이블 정렬 기능 ---
-document.querySelectorAll('th.sortable-header').forEach(header => {
-    header.addEventListener('click', function() {
-        const tbody = tableBody;
-        const column = this.cellIndex; // 클릭한 헤더의 열 인덱스
-        // data-sort 속성을 읽어 정렬 방향 확인
-        let currentDirection = this.getAttribute('data-sort');
-        const isAscending = currentDirection === 'asc';
-        const newDirection = isAscending ? 'desc' : 'asc';
+    <div class="container mx-auto p-4 md:p-8">
         
-        // 1. 모든 헤더의 정렬 방향과 화살표 초기화
-        document.querySelectorAll('th.sortable-header').forEach(h => {
-            h.setAttribute('data-sort', '');
-            h.querySelector('.sort-indicator').innerText = '';
-        });
+        <!-- 헤더 -->
+        <header class="mb-6 flex justify-between items-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                안전장비 검교정 현황
+            </h1>
+            <!-- 신규 장비 추가 버튼 -->
+            <button id="addRowBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition duration-150 ease-in-out">
+                + 신규 장비 추가
+            </button>
+        </header>
 
-        // 2. 현재 클릭한 헤더에만 정렬 방향과 화살표 설정
-        this.setAttribute('data-sort', newDirection);
-        // newDirection이 'asc' (오름차순) 일 때 '▲' 표시, 'desc' (내림차순) 일 때 '▼' 표시
-        this.querySelector('.sort-indicator').innerText = newDirection === 'asc' ? '▲' : '▼';
+        <!-- 테이블 컨테이너 (모바일 좌우 스크롤) -->
+        <div class="overflow-x-auto bg-white rounded-lg shadow">
+            <div class="inline-block min-w-full align-middle">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="w-16 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                No
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                장비명<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                장비번호<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                자산번호<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                검교정 상태<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                최근 검교정일<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                차기 검교정일<span class="sort-indicator"></span>
+                            </th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                담당자<span class="sort-indicator"></span>
+                            </th>
+                            <!-- '관리' 열은 정렬에서 제외 -->
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                관리
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
+                        
+                        <!-- 예시 데이터 1 -->
+                        <tr class="data-row">
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">가스 감지기</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">SAF-GAS-001</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">AST-00123</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                    정상
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2024-10-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2025-10-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">홍길동</td>
+                            <td class="px-6 py-4 text-center text-sm">
+                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                            </td>
+                        </tr>
 
-        // 3. 행(TR)들을 배열로 변환하여 정렬
-        const rows = Array.from(tbody.querySelectorAll('tr.data-row'));
-        rows.sort((a, b) => {
-            // 각 행의 해당 열(TD)에 있는 텍스트를 가져옴
-            const aText = a.cells[column].innerText;
-            const bText = b.cells[column].innerText;
-            
-            // 정렬 로직: newDirection이 'asc'이면 오름차순, 'desc'이면 내림차순
-            if (newDirection === 'asc') {
-                return aText.localeCompare(bText, 'ko'); // 한국어 기준으로 정렬
-            } else {
-                return bText.localeCompare(aText, 'ko');
+                        <!-- 예시 데이터 2 -->
+                        <tr class="data-row">
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">소음 측정기</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">SAF-SND-002</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">AST-00124</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    교정 필요
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2023-11-15</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2024-11-15</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">이순신</td>
+                            <td class="px-6 py-4 text-center text-sm">
+                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                            </td>
+                        </tr>
+
+                        <!-- 예시 데이터 3 -->
+                        <tr class="data-row">
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">전기 절연 장갑</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">SAF-EGV-003</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">AST-00125</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    기한 만료
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2023-08-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2024-08-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">강감찬</td>
+                            <td class="px-6 py-4 text-center text-sm">
+                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                            </td>
+                        </tr>
+
+                        <!-- 예시 데이터 4 -->
+                        <tr class="data-row">
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">안전모 (특급)</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">SAF-HMT-004</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">AST-00126</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                    N/A
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-700">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">홍길동</td>
+                            <td class="px-6 py-4 text-center text-sm">
+                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                            </td>
+                        </tr>
+
+                        <!-- 데이터가 동적으로 추가됩니다 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- 하단 안내 메시지 -->
+        <footer class="mt-4 text-center text-sm text-gray-500">
+            * '검교정 상태' 값에 따라 색상이 자동 변경됩니다. (예: 정상, 교정 필요, 기한 만료, N/A)<br>
+            * 수정/추가/삭제한 내용은 페이지를 새로고침하면 사라집니다. (데이터베이스가 없는 순수 HTML입니다.)<br>
+            © 2025 Equipment Status Board
+        </footer>
+    </div>
+
+    <!-- 편집 모달 (팝업창) -->
+    <div id="editModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
+            <!-- 모달 헤더 -->
+            <div class="border-b px-6 py-4">
+                <h3 class="text-xl font-semibold text-gray-800">장비 정보 수정</h3>
+            </div>
+            <!-- 모달 본문 (폼) -->
+            <form id="editForm" class="p-6 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="editName" class="block text-sm font-medium text-gray-700">장비명</label>
+                        <input type="text" id="editName" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                    <div>
+                        <label for="editManager" class="block text-sm font-medium text-gray-700">담당자</label>
+                        <input type="text" id="editManager" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="editNumber" class="block text-sm font-medium text-gray-700">장비번호</label>
+                        <input type="text" id="editNumber" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                    <div>
+                        <label for="editAsset" class="block text-sm font-medium text-gray-700">자산번호</label>
+                        <input type="text" id="editAsset" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                </div>
+                <div>
+                    <label for="editStatus" class="block text-sm font-medium text-gray-700">검교정 상태</label>
+                    <input type="text" id="editStatus" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="정상, 교정 필요, 기한 만료, N/A 등">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="editLastDate" class="block text-sm font-medium text-gray-700">최근 검교정일</label>
+                        <input type="date" id="editLastDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                    <div>
+                        <label for="editNextDate" class="block text-sm font-medium text-gray-700">차기 검교정일</label>
+                        <input type="date" id="editNextDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    </div>
+                </div>
+            </form>
+            <!-- 모달 푸터 (버튼) -->
+            <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+                <button id="closeModalBtn" class="bg-white hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 border border-gray-300 rounded-lg shadow-sm">
+                    취소
+                </button>
+                <button id="saveChangesBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm">
+                    저장
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ★★★ 모든 JavaScript 로직을 여기에 다시 합쳤습니다 ★★★ -->
+    <script>
+        // DOM 요소(HTML 태그)를 미리 찾아 변수에 저장
+        // 'defer'를 사용하지 않으므로, DOM이 로드된 후 스크립트가 실행되도록
+        // document.addEventListener('DOMContentLoaded', ...)로 전체를 감싸는 것이 좋습니다.
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // DOM 요소들을 이 안에서 찾도록 변경
+            const tableBody = document.getElementById('equipmentTableBody');
+            const addRowBtn = document.getElementById('addRowBtn');
+            const editModal = document.getElementById('editModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const saveChangesBtn = document.getElementById('saveChangesBtn');
+            const editForm = document.getElementById('editForm');
+
+            let currentRow = null; // 현재 편집 중인 행(TR)을 저장할 변수
+
+            // --- 1. 'No' 열 번호 자동 갱신 함수 ---
+            function updateRowNumbers() {
+                // null 체크 추가
+                if (!tableBody) return;
+                const rows = tableBody.querySelectorAll('tr.data-row');
+                rows.forEach((row, index) => {
+                    const cell = row.querySelector('.row-number-cell');
+                    if (cell) {
+                        cell.innerText = index + 1;
+                    }
+                });
             }
-        });
 
-        // 4. 정렬된 행을 다시 tbody에 순서대로 추가
-        rows.forEach(row => tbody.appendChild(row));
-
-        // 5. 정렬 후 'No' 열 갱신
-        updateRowNumbers();
-    });
-});
-
-// --- 4. 편집 모달 팝업창 관련 ---
-
-// 모달 열기 함수
-function openModal(row) {
-    currentRow = row; // 현재 행 저장
-    const cells = row.getElementsByTagName('td');
-    
-    // 폼에 현재 데이터 채우기 (No.는 0번째, 장비명은 1번째...)
-    document.getElementById('editName').value = cells[1].innerText;
-    document.getElementById('editNumber').value = cells[2].innerText;
-    document.getElementById('editAsset').value = cells[3].innerText;
-    // '검교정 상태'는 span 태그 안의 텍스트를 가져와야 함
-    const statusSpan = cells[4].querySelector('span');
-    document.getElementById('editStatus').value = statusSpan ? statusSpan.innerText : cells[4].innerText;
-    document.getElementById('editLastDate').value = cells[5].innerText;
-    document.getElementById('editNextDate').value = cells[6].innerText;
-    document.getElementById('editManager').value = cells[7].innerText;
-
-    editModal.classList.remove('hidden'); // 모달 보이기
-}
-
-// 모달 닫기 함수
-function closeModal() {
-    editModal.classList.add('hidden'); // 모달 숨기기
-    currentRow = null; // 현재 행 선택 해제
-}
-
-// '신규 장비 추가' 버튼 클릭 이벤트
-if (addRowBtn) {
-    addRowBtn.addEventListener('click', function() {
-        const newRowHTML = `
-            <tr class="data-row">
-                <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
-                <td class="px-6 py-4 text-sm font-medium text-gray-900">(장비명 입력)</td>
-                <td class="px-6 py-4 text-sm text-gray-700">(장비번호 입력)</td>
-                <td class="px-6 py-4 text-sm text-gray-700">(자산번호 입력)</td>
-                <td class="px-6 py-4 text-sm text-gray-700">
-                    ${getStatusSpan('N/A')}
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-700">2025-01-01</td>
-                <td class="px-6 py-4 text-sm text-gray-700">2026-01-01</td>
-                <td class="px-6 py-4 text-sm text-gray-700">(담당자 입력)</td>
-                <td class="px-6 py-4 text-center text-sm">
-                    <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
-                </td>
-            </tr>
-        `;
-        // 'beforeend'는 tableBody의 마지막 자식 뒤에 HTML을 삽입
-        tableBody.insertAdjacentHTML('beforeend', newRowHTML);
-
-        // 행 추가 후 'No' 열 갱신
-        updateRowNumbers();
-    });
-}
-
-// 테이블 영역 클릭 이벤트 (이벤트 위임)
-if (tableBody) {
-    tableBody.addEventListener('click', function(e) {
-        // '삭제' 버튼을 클릭한 경우
-        const deleteButton = e.target.closest('.delete-btn');
-        if (deleteButton) {
-            const row = deleteButton.closest('tr'); // 클릭한 버튼이 속한 행(TR)
-            if (confirm('이 항목을 정말 삭제하시겠습니까?')) {
-                row.remove(); // 행 삭제
-                updateRowNumbers(); // 행 삭제 후 'No' 열 갱신
+            // --- 2. '검교정 상태'에 따라 색상 Span을 생성하는 함수 ---
+            function getStatusSpan(statusText) {
+                let bgColor, textColor;
+                switch (statusText.trim()) {
+                    case '정상':
+                        bgColor = 'bg-green-100';
+                        textColor = 'text-green-800';
+                        break;
+                    case '교정 필요':
+                        bgColor = 'bg-yellow-100';
+                        textColor = 'text-yellow-800';
+                        break;
+                    case '기한 만료':
+                        bgColor = 'bg-red-100';
+                        textColor = 'text-red-800';
+                        break;
+                    default: // 'N/A' 또는 그 외
+                        bgColor = 'bg-gray-100';
+                        textColor = 'text-gray-800';
+                        break;
+                }
+                return `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${bgColor} ${textColor}">
+                            ${statusText}
+                        </span>`;
             }
-            return; // 모달이 열리지 않도록 여기서 중단
-        }
 
-        // '삭제' 버튼이 아닌, 행(TR)의 다른 부분을 클릭한 경우
-        const clickedRow = e.target.closest('tr.data-row');
-        if (clickedRow) {
-            openModal(clickedRow); // 편집 모달 열기
-        }
-    });
-}
+            // --- 3. 테이블 정렬 기능 ---
+            document.querySelectorAll('th.sortable-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    // tableBody가 null일 경우를 대비
+                    if (!tableBody) return;
 
-// 모달의 '저장' 버튼 클릭 이벤트
-if (saveChangesBtn) {
-    saveChangesBtn.addEventListener('click', function() {
-        if (currentRow) {
-            const cells = currentRow.getElementsByTagName('td');
-            
-            // 폼의 새 데이터로 테이블 셀(TD) 내용 업데이트
-            cells[1].innerText = document.getElementById('editName').value;
-            cells[2].innerText = document.getElementById('editNumber').value;
-            cells[3].innerText = document.getElementById('editAsset').value;
-            // 상태 셀은 getStatusSpan 함수를 통해 HTML(색상 span)을 다시 생성
-            cells[4].innerHTML = getStatusSpan(document.getElementById('editStatus').value);
-            cells[5].innerText = document.getElementById('editLastDate').value;
-            cells[6].innerText = document.getElementById('editNextDate').value;
-            cells[7].innerText = document.getElementById('editManager').value;
+                    const tbody = tableBody;
+                    const column = this.cellIndex;
+                    let currentDirection = this.getAttribute('data-sort');
+                    const isAscending = currentDirection === 'asc';
+                    const newDirection = isAscending ? 'desc' : 'asc';
+                    
+                    document.querySelectorAll('th.sortable-header').forEach(h => {
+                        h.setAttribute('data-sort', '');
+                        h.querySelector('.sort-indicator').innerText = '';
+                    });
 
-            closeModal(); // 모달 닫기
-        }
-    });
-}
+                    this.setAttribute('data-sort', newDirection);
+                    this.querySelector('.sort-indicator').innerText = newDirection === 'asc' ? '▲' : '▼';
 
-// 모달의 '취소' 버튼 클릭 이벤트
-if (closeModalBtn) {
-    closeModalBtn.addEventListener('click', closeModal);
-}
+                    const rows = Array.from(tbody.querySelectorAll('tr.data-row'));
+                    rows.sort((a, b) => {
+                        const aText = a.cells[column].innerText;
+                        const bText = b.cells[column].innerText;
+                        
+                        if (newDirection === 'asc') {
+                            return aText.localeCompare(bText, 'ko');
+                        } else {
+                            return bText.localeCompare(aText, 'ko');
+                        }
+                    });
 
-// 모달 바깥의 어두운 배경 클릭 시 닫기
-if (editModal) {
-    editModal.addEventListener('click', function(e) {
-        // e.target이 모달의 배경(editModal 자신)일 때만 닫기
-        if (e.target === editModal) {
-            closeModal();
-        }
-    });
-}
+                    rows.forEach(row => tbody.appendChild(row));
+                    updateRowNumbers();
+                });
+            });
 
-// --- 5. 페이지 로드 시 초기화 ---
-// defer 속성으로 <script>를 불렀기 때문에 DOMContentLoaded가 필수는 아니지만,
-// 명시적으로 DOM이 로드된 후에 실행되도록 하는 것이 더 안전합니다.
-document.addEventListener('DOMContentLoaded', function() {
-    // null 체크 추가 (HTML 요소들을 찾지 못했을 경우 오류 방지)
-    if (tableBody && addRowBtn && editModal && closeModalBtn && saveChangesBtn && editForm) {
-        updateRowNumbers(); // 페이지 로드 시 'No' 열 번호 매기기
-    } else {
-        console.error("필수 HTML 요소를 찾을 수 없습니다. ID를 확인해주세요.");
-    }
-});
+            // --- 4. 편집 모달 팝업창 관련 ---
+
+            // 모달 열기 함수
+            function openModal(row) {
+                currentRow = row;
+                const cells = row.getElementsByTagName('td');
+                
+                document.getElementById('editName').value = cells[1].innerText;
+                document.getElementById('editNumber').value = cells[2].innerText;
+                document.getElementById('editAsset').value = cells[3].innerText;
+                
+                const statusSpan = cells[4].querySelector('span');
+                document.getElementById('editStatus').value = statusSpan ? statusSpan.innerText : cells[4].innerText;
+                
+                document.getElementById('editLastDate').value = cells[5].innerText;
+                document.getElementById('editNextDate').value = cells[6].innerText;
+                document.getElementById('editManager').value = cells[7].innerText;
+
+                if (editModal) editModal.classList.remove('hidden');
+            }
+
+            // 모달 닫기 함수
+            function closeModal() {
+                if (editModal) editModal.classList.add('hidden');
+                currentRow = null;
+            }
+
+            // '신규 장비 추가' 버튼 클릭 이벤트
+            if (addRowBtn) {
+                addRowBtn.addEventListener('click', function() {
+                    if (!tableBody) return;
+                    const newRowHTML = `
+                        <tr class="data-row">
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">(장비명 입력)</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">(장비번호 입력)</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">(자산번호 입력)</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">
+                                ${getStatusSpan('N/A')}
+                            </td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2025-01-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">2026-01-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">(담당자 입력)</td>
+                            <td class="px-6 py-4 text-center text-sm">
+                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.insertAdjacentHTML('beforeend', newRowHTML);
+                    updateRowNumbers();
+                });
+            }
+
+            // 테이블 영역 클릭 이벤트 (이벤트 위임)
+            if (tableBody) {
+                tableBody.addEventListener('click', function(e) {
+                    const deleteButton = e.target.closest('.delete-btn');
+                    if (deleteButton) {
+                        const row = deleteButton.closest('tr');
+                        if (confirm('이 항목을 정말 삭제하시겠습니까?')) {
+                            row.remove();
+                            updateRowNumbers();
+                        }
+                        return;
+                    }
+
+                    const clickedRow = e.target.closest('tr.data-row');
+                    if (clickedRow) {
+                        openModal(clickedRow);
+                    }
+                });
+            }
+
+            // 모달의 '저장' 버튼 클릭 이벤트
+            if (saveChangesBtn) {
+                saveChangesBtn.addEventListener('click', function() {
+                    if (currentRow) {
+                        const cells = currentRow.getElementsByTagName('td');
+                        
+                        cells[1].innerText = document.getElementById('editName').value;
+                        cells[2].innerText = document.getElementById('editNumber').value;
+                        cells[3].innerText = document.getElementById('editAsset').value;
+                        cells[4].innerHTML = getStatusSpan(document.getElementById('editStatus').value);
+                        cells[5].innerText = document.getElementById('editLastDate').value;
+                        cells[6].innerText = document.getElementById('editNextDate').value;
+                        cells[7].innerText = document.getElementById('editManager').value;
+
+                        closeModal();
+                    }
+                });
+            }
+
+            // 모달의 '취소' 버튼 클릭 이벤트
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeModal);
+            }
+
+            // 모달 바깥의 어두운 배경 클릭 시 닫기
+            if (editModal) {
+                editModal.addEventListener('click', function(e) {
+                    if (e.target === editModal) {
+                        closeModal();
+                    }
+                });
+            }
+
+            // --- 5. 페이지 로드 시 초기화 ---
+            // DOMContentLoaded 이벤트 리스너가 이 함수를 감싸고 있으므로
+            // 페이지가 로드되자마자 updateRowNumbers가 실행됩니다.
+            updateRowNumbers();
+
+        }); // DOMContentLoaded 래퍼(wrapper) 종료
+    </script>
+
+</body>
+</html>
 
