@@ -16,10 +16,14 @@
             width: 1em;
             color: #9ca3af; /* text-gray-400 */
         }
-        /* 1. 행 클릭 시 사진을 보기 위해 hover/cursor 스타일 다시 적용 */
+        /* 1. 행 hover 시 커서 변경 (삭제) */
         .data-row:hover {
             background-color: #f3f4f6; /* bg-gray-100 on hover */
-            cursor: pointer; /* 클릭 가능함을 표시 */
+            /* cursor: pointer; (삭제) */
+        }
+        /* 1. '장비명' 셀만 클릭 가능하도록 커서 변경 */
+        .image-trigger-cell {
+            cursor: pointer;
         }
         /* 날짜 임박 강조 스타일 */
         .highlight-due-date {
@@ -89,7 +93,8 @@
                         <!-- 예시 데이터 1: data-image-url 추가 -->
                         <tr class="data-row" data-image-url="https://placehold.co/600x400/007bff/FFFFFF?text=Gas+Detector+Image">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">
+                            <!-- 1. '장비명' <td>에 image-trigger-cell 클래스 추가 -->
+                            <td class="image-trigger-cell px-6 py-4 text-sm font-medium text-gray-900 text-center">
                                 가스 감지기
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-GAS-001</td>
@@ -102,13 +107,13 @@
                             <td class="px-6 py-4 text-center text-sm">
                                 <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
                                 <button class="delete-btn text-red-500 hover:text-red-700">삭제</button>
-                                <!-- 1. '사진' 버튼 삭제 -->
                             </td>
                         </tr>
 
                         <!-- 예시 데이터 2 --><tr class="data-row" data-image-url="">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">소음 측정기</td>
+                            <!-- 1. '장비명' <td>에 image-trigger-cell 클래스 추가 -->
+                            <td class="image-trigger-cell px-6 py-4 text-sm font-medium text-gray-900 text-center">소음 측정기</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-SND-002</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">AST-00124</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">
@@ -124,7 +129,8 @@
 
                         <!-- 예시 데이터 3 --><tr class="data-row" data-image-url="">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">전기 절연 장갑</td>
+                            <!-- 1. '장비명' <td>에 image-trigger-cell 클래스 추가 -->
+                            <td class="image-trigger-cell px-6 py-4 text-sm font-medium text-gray-900 text-center">전기 절연 장갑</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-EGV-003</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">AST-00125</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">
@@ -141,7 +147,8 @@
 
                         <!-- 예시 데이터 4 --><tr class="data-row" data-image-url="">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">안전모 (특급)</td>
+                            <!-- 1. '장비명' <td>에 image-trigger-cell 클래스 추가 -->
+                            <td class="image-trigger-cell px-6 py-4 text-sm font-medium text-gray-900 text-center">안전모 (특급)</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-HMT-004</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">AST-00126</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">
@@ -210,7 +217,7 @@
                         <input type="date" id="editNextDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
                     </div>
                 </div>
-                <!-- 2. '내가 추가한 사진'을 넣는 곳 -->
+                <!-- '내가 추가한 사진'을 넣는 곳 -->
                 <div>
                     <label for="editImageUrl" class="block text-sm font-medium text-gray-700">이미지 URL</label>
                     <input type="text" id="editImageUrl" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="https://example.com/image.png">
@@ -308,7 +315,7 @@
                 return statusText.trim();
             }
 
-            // 1. '사진' 버튼 로직이 삭제되었으므로, '관리' 버튼 HTML 반환 함수 수정
+            // --- '관리' 버튼 HTML 반환 함수 ---
             function getManageButtonsHTML() {
                 let html = `
                     <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
@@ -403,7 +410,7 @@
                 
                 document.getElementById('editManager').value = cells[7].innerText;
 
-                // 2. 이미지 URL 로드
+                // 이미지 URL 로드
                 document.getElementById('editImageUrl').value = row.dataset.imageUrl || '';
 
                 editModal.classList.remove('hidden');
@@ -421,7 +428,7 @@
                     if (currentRow) {
                         const cells = currentRow.getElementsByTagName('td');
                         
-                        // 2. 이미지 URL 저장
+                        // 이미지 URL 저장
                         const newImageUrl = document.getElementById('editImageUrl').value;
                         currentRow.dataset.imageUrl = newImageUrl; // data-image-url 속성 업데이트
 
@@ -433,8 +440,7 @@
                         cells[6].innerText = document.getElementById('editNextDate').value; 
                         cells[7].innerText = document.getElementById('editManager').value;
                         
-                        // 1. 관리 버튼 셀은 더 이상 업데이트할 필요 없음
-                        // cells[8].innerHTML = getManageButtonsHTML(newImageUrl); // (삭제)
+                        // '관리' 버튼 셀은 업데이트할 필요 없음 (항상 '수정/삭제' 고정)
 
                         closeModal();
                         checkAndHighlightDueDates();
@@ -511,10 +517,10 @@
                 addRowBtn.addEventListener('click', function() {
                     if (!tableBody) return;
                     const newRowHTML = `
-                        <!-- 2. data-image-url="" 추가 -->
                         <tr class="data-row" data-image-url="">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">
+                            <!-- 1. '장비명' <td>에 image-trigger-cell 클래스 추가 -->
+                            <td class="image-trigger-cell px-6 py-4 text-sm font-medium text-gray-900 text-center">
                                 (장비명 입력)
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">(장비번호 입력)</td>
@@ -526,7 +532,6 @@
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().slice(0, 10)}</td>
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">(담당자 입력)</td>
                             <td class="px-6 py-4 text-center text-sm">
-                                <!-- 1. '사진' 버튼 없는 기본 관리 버튼 -->
                                 ${getManageButtonsHTML()}
                             </td>
                         </tr>
@@ -537,7 +542,7 @@
                 });
             }
 
-            // --- 1. 테이블 영역 클릭 이벤트 (수정/삭제/행 클릭 감지) ---
+            // --- 1. 테이블 영역 클릭 이벤트 (수정/삭제/장비명 클릭 감지) ---
             if (tableBody) {
                 tableBody.addEventListener('click', function(e) {
                     // 수정 버튼 클릭 (최우선)
@@ -547,7 +552,7 @@
                         if (row) {
                             openModal(row);
                         }
-                        return; // 행 클릭 이벤트 방지
+                        return; // 다른 클릭 이벤트 방지
                     }
 
                     // 삭제 버튼 클릭 (최우선)
@@ -557,21 +562,20 @@
                         if (row) {
                             openPasswordModal(row);
                         }
-                        return; // 행 클릭 이벤트 방지
+                        return; // 다른 클릭 이벤트 방지
                     }
 
-                    // 1. '사진' 버튼 로직 삭제
-
-                    // 1. 버튼이 아닌 '행' 자체를 클릭했을 때
-                    const clickedRow = e.target.closest('tr.data-row');
-                    if (clickedRow) {
-                        // 2. '내가 추가한' 이미지 URL 확인
-                        const imageUrl = clickedRow.dataset.imageUrl;
-                        if (imageUrl && imageUrl.trim() !== '') {
-                            equipmentImage.src = imageUrl;
-                            imageModal.classList.remove('hidden');
+                    // 1. '장비명' 셀 클릭 (사진 보기)
+                    const imageTriggerCell = e.target.closest('.image-trigger-cell');
+                    if (imageTriggerCell) {
+                        const clickedRow = imageTriggerCell.closest('tr.data-row');
+                        if (clickedRow) {
+                            const imageUrl = clickedRow.dataset.imageUrl;
+                            if (imageUrl && imageUrl.trim() !== '') {
+                                equipmentImage.src = imageUrl;
+                                imageModal.classList.remove('hidden');
+                            }
                         }
-                        // URL 없으면 아무일도 안일어남
                         return;
                     }
                 });
