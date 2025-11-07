@@ -16,10 +16,6 @@
             width: 1em;
             color: #9ca3af; /* text-gray-400 */
         }
-        /* 테이블 셀 텍스트 줄바꿈 방지 (모달 팝업으로 변경되어 필요성 감소) */
-        /* .data-row td {
-            white-space: nowrap;
-        } */
         .data-row:hover {
             background-color: #f3f4f6; /* bg-gray-100 on hover */
             cursor: pointer;
@@ -89,14 +85,15 @@
                     </thead>
                     <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
                         
-                        <!-- 예시 데이터 1 (날짜 강조를 테스트하기 위해 차기 검교정일 조정) --><tr class="data-row">
+                        <!-- 예시 데이터 1 (상태: '적합'으로 변경) --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">가스 감지기</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-GAS-001</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00123</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
+                                <!-- 1. '정상' -> '적합'으로 변경 -->
                                 <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                    정상
+                                    적합
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2024-10-01</td>
@@ -106,14 +103,15 @@
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 2 --><tr class="data-row">
+                        <!-- 예시 데이터 2 (상태: '부적합'으로 변경) --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">소음 측정기</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-SND-002</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00124</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                    교정 필요
+                                <!-- 1. '교정 필요' -> '부적합'으로 변경 (스타일도 부적합에 맞게) -->
+                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                    부적합
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2023-11-15</td>
@@ -123,14 +121,15 @@
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 3 --><tr class="data-row">
+                        <!-- 예시 데이터 3 (상태: '부적합'으로 변경) --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">전기 절연 장갑</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-EGV-003</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00125</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
+                                <!-- 1. '기한 만료' -> '부적합'으로 변경 -->
                                 <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                    기한 만료
+                                    부적합
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2023-08-01</td>
@@ -141,7 +140,7 @@
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 4 --><tr class="data-row">
+                        <!-- 예시 데이터 4 (상태: 'N/A' 유지) --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">안전모 (특급)</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-HMT-004</td>
@@ -196,8 +195,13 @@
                     </div>
                 </div>
                 <div>
+                    <!-- ★★★ 1. 요청사항 반영: '검교정 상태'를 텍스트 입력에서 'select' 드롭다운으로 변경 ★★★ -->
                     <label for="editStatus" class="block text-sm font-medium text-gray-700">검교정 상태</label>
-                    <input type="text" id="editStatus" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="정상, 교정 필요, 기한 만료, N/A 등">
+                    <select id="editStatus" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white">
+                        <option>적합</option>
+                        <option>부적합</option>
+                        <option>N/A</option> <!-- N/A 옵션도 추가 -->
+                    </select>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -221,7 +225,7 @@
         </div>
     </div>
 
-    <!-- ★★★ 모든 JavaScript 로직을 여기에 다시 합쳤습니다 ★★★ --><script>
+    <!-- ★★★ 모든 JavaScript 로직 ★★★ --><script>
         document.addEventListener('DOMContentLoaded', function() {
 
             const tableBody = document.getElementById('equipmentTableBody');
@@ -245,19 +249,18 @@
                 });
             }
 
-            // --- '검교정 상태'에 따라 색상 Span을 생성하는 함수 ---
+            // --- '검교정 상태'에 따라 색상 Span을 생성하는 함수 (로직 변경) ---
             function getStatusSpan(statusText) {
                 let bgColor, textColor;
-                switch (statusText.trim()) {
-                    case '정상':
+                const normalizedText = statusText.trim(); // 공백 제거
+
+                // ★★★ 1. 요청사항 반영: '적합' / '부적합' 두 가지 상태로 단순화 ★★★
+                switch (normalizedText) {
+                    case '적합':
                         bgColor = 'bg-green-100';
                         textColor = 'text-green-800';
                         break;
-                    case '교정 필요':
-                        bgColor = 'bg-yellow-100';
-                        textColor = 'text-yellow-800';
-                        break;
-                    case '기한 만료':
+                    case '부적합':
                         bgColor = 'bg-red-100';
                         textColor = 'text-red-800';
                         break;
@@ -360,6 +363,7 @@
                 document.getElementById('editAsset').value = cells[3].innerText;
                 
                 const statusSpan = cells[4].querySelector('span');
+                // ★★★ 1. 'select' 드롭다운의 값을 설정 (input과 동일하게 value 속성 사용) ★★★
                 document.getElementById('editStatus').value = statusSpan ? statusSpan.innerText.trim() : cells[4].innerText.trim();
                 
                 document.getElementById('editLastDate').value = cells[5].innerText;
@@ -390,7 +394,8 @@
                             <td class="px-6 py-4 text-sm text-gray-700">(장비번호 입력)</td>
                             <td class="px-6 py-4 text-sm text-gray-700">(자산번호 입력)</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                ${getStatusSpan('N/A')}
+                                <!-- ★★★ 1. 신규 장비 추가 시 기본 상태를 'N/A'에서 '적합'으로 변경 ★★★ -->
+                                ${getStatusSpan('적합')}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">${new Date().toISOString().slice(0, 10)}</td>
                             <td class="px-6 py-4 text-sm text-gray-700">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().slice(0, 10)}</td>
@@ -412,6 +417,10 @@
                     const deleteButton = e.target.closest('.delete-btn');
                     if (deleteButton) {
                         const row = deleteButton.closest('tr');
+                        
+                        // confirm()은 iframe 환경에서 작동하지 않을 수 있으므로, 
+                        // 실제 환경에 맞게 커스텀 모달이나 라이브러리로 대체하는 것이 좋습니다.
+                        // 여기서는 일단 기본 confirm을 사용합니다.
                         if (confirm('이 항목을 정말 삭제하시겠습니까?')) {
                             row.remove();
                             updateRowNumbers();
@@ -436,6 +445,7 @@
                         cells[1].innerText = document.getElementById('editName').value;
                         cells[2].innerText = document.getElementById('editNumber').value;
                         cells[3].innerText = document.getElementById('editAsset').value;
+                        // ★★★ 1. 'select' 드롭다운의 값을 읽어와 getStatusSpan 함수로 HTML 변경 ★★★
                         cells[4].innerHTML = getStatusSpan(document.getElementById('editStatus').value);
                         cells[5].innerText = document.getElementById('editLastDate').value;
                         cells[6].innerText = document.getElementById('editNextDate').value; // 날짜 강조를 위해 innerText 유지
@@ -465,7 +475,7 @@
             if (searchInput) {
                 searchInput.addEventListener('keyup', function() {
                     const searchTerm = this.value.toLowerCase(); // 검색어를 소문자로 변환
-                    const rows = tableBody.querySelectorAll('tr.data-row');
+                    const rows = tableBody.querySelectorAll('tr.data-Mrow');
 
                     rows.forEach(row => {
                         let rowContainsSearchTerm = false;
@@ -495,5 +505,3 @@
 
 </body>
 </html>
-
-
