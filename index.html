@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>안전장비 검교정 현황</title>
     <!-- Tailwind CSS 로드 --><script src="https://cdn.tailwindcss.com"></script>
     <!-- 커스텀 스타일 (정렬 화살표 등) --><style>
@@ -16,9 +16,10 @@
             width: 1em;
             color: #9ca3af; /* text-gray-400 */
         }
+        /* 2. 행 전체 클릭이 아니므로 hover 스타일 및 커서 제거 */
         .data-row:hover {
             background-color: #f3f4f6; /* bg-gray-100 on hover */
-            cursor: pointer;
+            /* cursor: pointer; (제거) */
         }
         /* 날짜 임박 강조 스타일 */
         .highlight-due-date {
@@ -54,39 +55,30 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="w-16 px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 No
                             </th>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 장비명<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 장비번호<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 자산번호<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 검교정 상태<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 최근 검교정일<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 차기 검교정일<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
                             <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 담당자<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'text-gray-500' -> 'text-gray-800' 변경 (정렬은 원래 center) -->
                             <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 관리
                             </th>
@@ -95,79 +87,76 @@
                     <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
                         
                         <!-- 예시 데이터 1 --><tr class="data-row">
-                            <!-- 3. text-center 추가 -->
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">가스 감지기</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-GAS-001</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">AST-00123</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">
-                                <!-- 1. <span> 태그 및 색상 제거 -->
                                 적합
                             </td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">2024-10-01</td>
-                            <!-- 3. text-center 추가 -->
-                            <td class="px-6 py-4 text-sm text-gray-700 text-center">2025-01-15</td> <!-- 1개월 이내 --><!-- 3. text-center 추가 --><td class="px-6 py-4 text-sm text-gray-700 text-center">홍길동</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">2025-01-15</td> <!-- 1개월 이내 --><td class="px-6 py-4 text-sm text-gray-700 text-center">홍길동</td>
                             <td class="px-6 py-4 text-center text-sm">
-                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                                <!-- 2. 수정 버튼 추가 -->
+                                <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
+                                <button class="delete-btn text-red-500 hover:text-red-700">삭제</button>
                             </td>
                         </tr>
 
-                        <!-- ★★★ 2. 정렬이 어긋나 보이게 한 중복 데이터 4줄을 삭제했습니다 (여기부터) ★★★ -->
                         <!-- 예시 데이터 2 --><tr class="data-row">
-                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">소음 측정기</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">SAF-SND-002</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">AST-00124</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- 1. <span> 태그 및 색상 제거 -->
+                            <!-- 3. 정렬 오류 수정을 위해 중복 데이터 삭제, text-center 적용 확인 -->
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">소음 측정기</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-SND-002</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">AST-00124</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">
                                 부적합
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2023-11-15</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2024-12-25</td> <!-- 1개월 이내 --><td class="px-6 py-4 text-sm text-gray-700">이순신</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">2023-11-15</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">2024-12-25</td> <!-- 1개월 이내 --><td class="px-6 py-4 text-sm text-gray-700 text-center">이순신</td>
                             <td class="px-6 py-4 text-center text-sm">
-                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                                <!-- 2. 수정 버튼 추가 -->
+                                <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
+                                <button class="delete-btn text-red-500 hover:text-red-700">삭제</button>
                             </td>
                         </tr>
 
                         <!-- 예시 데이터 3 --><tr class="data-row">
-                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">전기 절연 장갑</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">SAF-EGV-003</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">AST-00125</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- 1. <span> 태그 및 색상 제거 -->
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">전기 절연 장갑</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-EGV-003</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">AST-00125</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">
                                 부적합
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2023-08-01</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">2024-08-01</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">강감찬</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">2023-08-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">2024-08-01</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">강감찬</td>
                             <td class="px-6 py-4 text-center text-sm">
-                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                                <!-- 2. 수정 버튼 추가 -->
+                                <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
+                                <button class="delete-btn text-red-500 hover:text-red-700">삭제</button>
                             </td>
                         </tr>
 
                         <!-- 예시 데이터 4 --><tr class="data-row">
-                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">안전모 (특급)</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">SAF-HMT-004</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">AST-00126</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- 1. <span> 태그 및 색상 제거 -->
+                            <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">안전모 (특급)</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">SAF-HMT-004</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">AST-00126</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">
                                 N/A
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-700">-</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">-</td>
-                            <td class="px-6 py-4 text-sm text-gray-700">홍길동</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">-</td>
+                            <td class="px-6 py-4 text-sm text-gray-700 text-center">홍길동</td>
                             <td class="px-6 py-4 text-center text-sm">
-                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                                <!-- 2. 수정 버튼 추가 -->
+                                <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
+                                <button class="delete-btn text-red-500 hover:text-red-700">삭제</button>
                             </td>
                         </tr>
-                        <!-- ★★★ 2. 여기까지 불필요한 중복 데이터 4줄을 삭제했습니다 ★★★ -->
+                        <!-- 3. 정렬 오류를 유발하던 중복 예시 데이터 삭제됨 -->
 
                         <!-- 데이터가 동적으로 추가됩니다 --></tbody>
                 </table>
@@ -235,17 +224,52 @@
         </div>
     </div>
 
+    <!-- 1. 삭제(비밀번호) 모달 추가 -->
+    <div id="passwordModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
+            <div class="border-b px-6 py-4">
+                <h3 class="text-xl font-semibold text-gray-800">삭제 확인</h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label for="passwordInput" class="block text-sm font-medium text-gray-700">삭제하려면 비밀번호(0000)를 입력하세요.</label>
+                    <input type="password" id="passwordInput" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+                    <p id="passwordError" class="text-red-500 text-sm mt-1"></p>
+                </div>
+            </div>
+            <div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
+                <button id="cancelDeleteBtn" class="bg-white hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 border border-gray-300 rounded-lg shadow-sm">
+                    취소
+                </button>
+                <button id="confirmDeleteBtn" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm">
+                    삭제 확인
+                </button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- ★★★ 모든 JavaScript 로직 ★★★ --><script>
         document.addEventListener('DOMContentLoaded', function() {
 
             const tableBody = document.getElementById('equipmentTableBody');
             const addRowBtn = document.getElementById('addRowBtn');
+            const searchInput = document.getElementById('searchInput');
+
+            // 편집 모달
             const editModal = document.getElementById('editModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const saveChangesBtn = document.getElementById('saveChangesBtn');
-            const searchInput = document.getElementById('searchInput');
+            
+            // 1. 비밀번호 모달
+            const passwordModal = document.getElementById('passwordModal');
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordError = document.getElementById('passwordError');
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
 
-            let currentRow = null;
+            let currentRow = null; // 편집 중인 행
+            let rowToDelete = null; // 1. 삭제할 행
 
             // --- 'No' 열 번호 자동 갱신 함수 ---
             function updateRowNumbers() {
@@ -259,10 +283,8 @@
                 });
             }
 
-            // --- '검교정 상태'에 따라 색상 Span을 생성하는 함수 (로직 변경) ---
+            // --- '검교정 상태' 텍스트 반환 함수 ---
             function getStatusSpan(statusText) {
-                // ★★★ 1. 요청사항 반영: 모든 색상, 굵기, 음영 제거 ★★★
-                // <span> 태그 없이 순수 텍스트만 반환
                 return statusText.trim();
             }
 
@@ -277,7 +299,8 @@
                 const rows = tableBody.querySelectorAll('tr.data-row');
                 rows.forEach(row => {
                     const nextDueDateCell = row.cells[6]; // '차기 검교정일' 열 (0부터 시작)
-                    const nextDueDateText = nextDueDateCell.innerText;
+                    // 3. text-center가 적용된 셀의 innerText를 가져오도록 수정 (정상 작동)
+                    const nextDueDateText = nextDueDateCell.innerText.trim();
 
                     // 이전에 적용된 클래스 제거
                     row.classList.remove('highlight-due-date');
@@ -290,10 +313,8 @@
                         const nextDueDate = new Date(nextDueDateText);
                         nextDueDate.setHours(0, 0, 0, 0);
 
-                        // 차기 검교정일이 오늘 이후이고 1개월 이내인 경우
                         if (nextDueDate >= today && nextDueDate <= oneMonthLater) {
                             row.classList.add('highlight-due-date');
-                            // 텍스트만 강조하는 span 추가 (편집 모달에 값 넘길 때 방해하지 않기 위해 innerText 유지)
                             nextDueDateCell.innerHTML = `<span class="next-due-date-text">${nextDueDateText}</span>`;
                         }
                     }
@@ -330,7 +351,7 @@
                         const bText = b.cells[column].innerText;
                         
                         if (newDirection === 'asc') {
-                            return aText.localeCompare(bText, 'ko', { numeric: true }); // 숫자도 고려한 한국어 정렬
+                            return aText.localeCompare(bText, 'ko', { numeric: true });
                         } else {
                             return bText.localeCompare(aText, 'ko', { numeric: true });
                         }
@@ -343,7 +364,6 @@
             });
 
             // --- 편집 모달 팝업창 관련 ---
-
             // 모달 열기 함수
             function openModal(row) {
                 if (!editModal) return;
@@ -353,10 +373,7 @@
                 document.getElementById('editName').value = cells[1].innerText;
                 document.getElementById('editNumber').value = cells[2].innerText;
                 document.getElementById('editAsset').value = cells[3].innerText;
-                
-                // ★★★ 1. <span>이 없으므로 innerText로 바로 값을 읽음 ★★★
                 document.getElementById('editStatus').value = cells[4].innerText.trim();
-                
                 document.getElementById('editLastDate').value = cells[5].innerText;
                 
                 const nextDueDateSpan = cells[6].querySelector('.next-due-date-text');
@@ -373,70 +390,167 @@
                 currentRow = null;
             }
 
-            // '신규 장비 추가' 버튼 클릭 이벤트
+            // 모달의 '저장' 버튼 클릭 이벤트
+            if (saveChangesBtn) {
+                saveChangesBtn.addEventListener('click', function() {
+                    if (currentRow) {
+                        const cells = currentRow.getElementsByTagName('td');
+                        
+                        cells[1].innerText = document.getElementById('editName').value;
+                        cells[2].innerText = document.getElementById('editNumber').value;
+                        cells[3].innerText = document.getElementById('editAsset').value;
+                        cells[4].innerText = getStatusSpan(document.getElementById('editStatus').value);
+                        cells[5].innerText = document.getElementById('editLastDate').value;
+                        cells[6].innerText = document.getElementById('editNextDate').value; 
+                        cells[7].innerText = document.getElementById('editManager').value;
+
+                        closeModal();
+                        checkAndHighlightDueDates(); // 저장 후 강조 재적용
+                    }
+                });
+            } // 3. ★★★ 빠졌던 닫는 괄호 '});'를 여기(v4)가 아닌, 정확한 위치(아래)로 수정했습니다. ★★★
+
+            // 모달의 '취소' 버튼 클릭 이벤트
+            if (closeModalBtn) {
+                closeModalBtn.addEventListener('click', closeModal);
+            }
+
+            // (편집 모달) 바깥 어두운 배경 클릭 시 닫기
+            if (editModal) {
+                editModal.addEventListener('click', function(e) {
+                    if (e.target === editModal) {
+                        closeModal();
+                    }
+                });
+            }
+
+
+            // --- 1. 비밀번호 모달 관련 ---
+            // 비밀번호 모달 열기
+            function openPasswordModal(row) {
+                rowToDelete = row;
+                passwordInput.value = '';
+                passwordError.innerText = '';
+                passwordModal.classList.remove('hidden');
+            }
+
+            // 비밀번호 모달 닫기
+            function closePasswordModal() {
+                passwordModal.classList.add('hidden');
+                rowToDelete = null;
+            }
+
+            // 비밀번호 모달 '삭제 확인' 버튼
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.addEventListener('click', function() {
+                    if (passwordInput.value === '0000') {
+                        if (rowToDelete) {
+                            rowToDelete.remove();
+                            updateRowNumbers();
+                            checkAndHighlightDueDates();
+                        }
+                        closePasswordModal();
+                    } else {
+                        passwordError.innerText = '비밀번호가 틀렸습니다.';
+                    }
+                });
+            }
+
+            // 비밀번호 모달 '취소' 버튼
+            if (cancelDeleteBtn) {
+                cancelDeleteBtn.addEventListener('click', closePasswordModal);
+            }
+
+            // --- '신규 장비 추가' 버튼 클릭 이벤트 ---
             if (addRowBtn) {
                 addRowBtn.addEventListener('click', function() {
                     if (!tableBody) return;
                     const newRowHTML = `
                         <tr class="data-row">
-                            <!-- 3. text-center 추가 -->
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">(장비명 입력)</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">(장비번호 입력)</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">(자산번호 입력)</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">
-                                <!-- ★★★ 1. getStatusSpan('적합')이 '적합' 텍스트를 반환 ★★★ -->
                                 ${getStatusSpan('적합')}
                             </td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">${new Date().toISOString().slice(0, 10)}</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">${new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().slice(0, 10)}</td>
-                            <!-- 3. text-center 추가 -->
                             <td class="px-6 py-4 text-sm text-gray-700 text-center">(담당자 입력)</td>
                             <td class="px-6 py-4 text-center text-sm">
-                                <button class="delete-btn text-red-500 hover:text-red-700 transition duration-150 ease-in-out">삭제</button>
+                                <!-- 2. 수정 버튼 추가 -->
+                                <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
+                                <button class="delete-btn text-red-500 hover:text-red-700">삭제</button>
                             </td>
                         </tr>
                     `;
                     tableBody.insertAdjacentHTML('beforeend', newRowHTML);
                     updateRowNumbers();
-                    checkAndHighlightDueDates(); // 새 행 추가 후 강조 재적용
+                    checkAndHighlightDueDates(); 
                 });
             }
 
-            <!-- ★★★ 1. 수정/삭제 기능이 작동하도록 빠진 이벤트 리스너를 다시 추가합니다 ★★★ -->
-            // 테이블 영역 클릭 이벤트 (이벤트 위임)
+            // --- 2. 테이블 영역 클릭 이벤트 (수정/삭제 버튼만 감지) ---
             if (tableBody) {
                 tableBody.addEventListener('click', function(e) {
-                    const deleteButton = e.target.closest('.delete-btn');
-                    if (deleteButton) {
-                        const row = deleteButton.closest('tr');
-                        
-                        if (confirm('이 항목을 정말 삭제하시겠습니까?')) {
-                            row.remove();
-                            updateRowNumbers();
-                            checkAndHighlightDueDates(); // 행 삭제 후 강조 재적용
+                    // 수정 버튼 클릭
+                    const editButton = e.target.closest('.edit-btn');
+                    if (editButton) {
+                        const row = editButton.closest('tr');
+                        if (row) {
+                            openModal(row);
                         }
                         return;
                     }
 
-                    const clickedRow = e.target.closest('tr.data-row');
-                    if (clickedRow) {
-                        openModal(clickedRow);
+                    // 삭제 버튼 클릭
+                    const deleteButton = e.target.closest('.delete-btn');
+                    if (deleteButton) {
+                        const row = deleteButton.closest('tr');
+                        if (row) {
+                            // 1. 비밀번호 모달 열기
+                            openPasswordModal(row);
+                        }
+                        return;
                     }
+
+                    // 2. 행 전체 클릭 로직은 제거됨
                 });
             }
-            <!-- ★★★ 1. 여기까지가 빠졌던 부분입니다 ★★★ -->
 
-            // 모달의 '저장' 버튼 클릭 이벤트
-            if (saveChangesBtn) {
+            // 3. ★★★ v4에서 빠져있던 'saveChangesBtn'의 닫는 괄호를 올바른 위치로 수정 ★★★
+            // (이전 코드에서는 이 부분이 빠져있어, 아래의 검색 기능과 초기화 함수가 모두 실행되지 않았습니다)
+            // (saveChangesBtn 리스너는 이미 위에서 정의되었으므로, 여기서는 닫는 괄호를 추가할 필요가 없습니다.
+            // v4의 오류는 'if (saveChangesBtn) {' 블록의 '});'가 빠진 것이었습니다.
+            // 지금 코드는 'if (saveChangesBtn) { ... }' 블록이 올바르게 닫혀있으므로 문제가 없습니다.)
+
+
+            // --- 검색 기능 ---
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function() {
+                    const searchTerm = this.value.toLowerCase(); 
+                    const rows = tableBody.querySelectorAll('tr.data-row'); 
+
+                    rows.forEach(row => {
+                        let rowContainsSearchTerm = false;
+                        for (let i = 1; i < row.cells.length; i++) {
+                            const cellText = row.cells[i].innerText.toLowerCase();
+                            if (cellText.includes(searchTerm)) {
+                                rowContainsSearchTerm = true;
+                                break;
+                            }
+                        }
+                        if (rowContainsSearchTerm) {
+                            row.style.display = ''; 
+                        } else {
+                            row.style.display = 'none'; 
+                        }
+                    });
+                });
+            }
 
             // --- 페이지 로드 시 초기화 ---
+            // 3. JS 오류가 해결되어 이제 이 함수들이 정상적으로 실행됩니다.
             updateRowNumbers(); // 'No' 열 번호 매기기
             checkAndHighlightDueDates(); // 날짜 강조 초기 실행
 
