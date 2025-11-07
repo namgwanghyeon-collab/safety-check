@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0, user-scalable=yes">
     <title>안전장비 검교정 현황</title>
     <!-- Tailwind CSS 로드 --><script src="https://cdn.tailwindcss.com"></script>
     <!-- 커스텀 스타일 (정렬 화살표 등) --><style>
@@ -54,57 +54,54 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="w-16 px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="w-16 px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 No
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 장비명<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 장비번호<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 자산번호<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 검교정 상태<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 최근 검교정일<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 차기 검교정일<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-left', 'text-gray-500' -> 'text-center', 'text-gray-800' 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 담당자<span class="sort-indicator"></span>
                             </th>
-                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'text-gray-500' -> 'text-gray-800' 변경 (정렬은 원래 center) -->
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
                                 관리
                             </th>
                         </tr>
                     </thead>
                     <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
                         
-                        <!-- 예시 데이터 1 (상태: '적합'으로 변경) --><tr class="data-row">
+                        <!-- 예시 데이터 1 --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">가스 감지기</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-GAS-001</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00123</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- 1. '정상' -> '적합'으로 변경 -->
-                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
-                                <span class="text-green-600">
-                                    적합
-                                </span>
+                                <!-- 1. <span> 태그 및 색상 제거 -->
+                                적합
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2024-10-01</td>
                             <td class="px-6 py-4 text-sm text-gray-700">2025-01-15</td> <!-- 1개월 이내 --><td class="px-6 py-4 text-sm text-gray-700">홍길동</td>
@@ -113,17 +110,14 @@
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 2 (상태: '부적합'으로 변경) --><tr class="data-row">
+                        <!-- 예시 데이터 2 --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">소음 측정기</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-SND-002</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00124</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- 1. '교정 필요' -> '부적합'으로 변경 (스타일도 부적합에 맞게) -->
-                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
-                                <span class="text-red-600">
-                                    부적합
-                                </span>
+                                <!-- 1. <span> 태그 및 색상 제거 -->
+                                부적합
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2023-11-15</td>
                             <td class="px-6 py-4 text-sm text-gray-700">2024-12-25</td> <!-- 1개월 이내 --><td class="px-6 py-4 text-sm text-gray-700">이순신</td>
@@ -132,17 +126,14 @@
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 3 (상태: '부적합'으로 변경) --><tr class="data-row">
+                        <!-- 예시 데이터 3 --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">전기 절연 장갑</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-EGV-003</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00125</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- 1. '기한 만료' -> '부적합'으로 변경 -->
-                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
-                                <span class="text-red-600">
-                                    부적합
-                                </span>
+                                <!-- 1. <span> 태그 및 색상 제거 -->
+                                부적합
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">2023-08-01</td>
                             <td class="px-6 py-4 text-sm text-gray-700">2024-08-01</td>
@@ -152,16 +143,14 @@
                             </td>
                         </tr>
 
-                        <!-- 예시 데이터 4 (상태: 'N/A' 유지) --><tr class="data-row">
+                        <!-- 예시 데이터 4 --><tr class="data-row">
                             <td class="row-number-cell px-6 py-4 text-sm text-gray-500"></td>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">안전모 (특급)</td>
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-HMT-004</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00126</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
-                                <span class="text-gray-700">
-                                    N/A
-                                </span>
+                                <!-- 1. <span> 태그 및 색상 제거 -->
+                                N/A
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">-</td>
                             <td class="px-6 py-4 text-sm text-gray-700">-</td>
@@ -208,12 +197,11 @@
                     </div>
                 </div>
                 <div>
-                    <!-- ★★★ 1. 요청사항 반영: '검교정 상태'를 텍스트 입력에서 'select' 드롭다운으로 변경 ★★★ -->
                     <label for="editStatus" class="block text-sm font-medium text-gray-700">검교정 상태</label>
                     <select id="editStatus" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white">
                         <option>적합</option>
                         <option>부적합</option>
-                        <option>N/A</option> <!-- N/A 옵션도 추가 -->
+                        <option>N/A</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -246,7 +234,7 @@
             const editModal = document.getElementById('editModal');
             const closeModalBtn = document.getElementById('closeModalBtn');
             const saveChangesBtn = document.getElementById('saveChangesBtn');
-            const searchInput = document.getElementById('searchInput'); // 검색 입력란 추가
+            const searchInput = document.getElementById('searchInput');
 
             let currentRow = null;
 
@@ -264,28 +252,9 @@
 
             // --- '검교정 상태'에 따라 색상 Span을 생성하는 함수 (로직 변경) ---
             function getStatusSpan(statusText) {
-                let textColor; // bgColor 변수 제거
-                const normalizedText = statusText.trim(); // 공백 제거
-
-                // ★★★ 1. 요청사항 반영: '적합' / '부적합' 두 가지 상태로 단순화 + 음영/굵기 제거 ★★★
-                switch (normalizedText) {
-                    case '적합':
-                        //bgColor = 'bg-green-100';
-                        textColor = 'text-green-600'; // 텍스트 색상만 지정
-                        break;
-                    case '부적합':
-                        //bgColor = 'bg-red-100';
-                        textColor = 'text-red-600'; // 텍스트 색상만 지정
-                        break;
-                    default: // 'N/A' 또는 그 외
-                        //bgColor = 'bg-gray-100';
-                        textColor = 'text-gray-700'; // 텍스트 색상만 지정
-                        break;
-                }
-                // 1. 음영/굵기 관련 클래스(px-3 py-1, font-semibold, rounded-full, bgColor) 모두 제거
-                return `<span class="${textColor}">
-                            ${statusText}
-                        </span>`;
+                // ★★★ 1. 요청사항 반영: 모든 색상, 굵기, 음영 제거 ★★★
+                // <span> 태그 없이 순수 텍스트만 반환
+                return statusText.trim();
             }
 
             // --- 날짜 임박 강조 및 초기 설정 함수 ---
@@ -376,13 +345,11 @@
                 document.getElementById('editNumber').value = cells[2].innerText;
                 document.getElementById('editAsset').value = cells[3].innerText;
                 
-                const statusSpan = cells[4].querySelector('span');
-                // ★★★ 1. 'select' 드롭다운의 값을 설정 (input과 동일하게 value 속성 사용) ★★★
-                document.getElementById('editStatus').value = statusSpan ? statusSpan.innerText.trim() : cells[4].innerText.trim();
+                // ★★★ 1. <span>이 없으므로 innerText로 바로 값을 읽음 ★★★
+                document.getElementById('editStatus').value = cells[4].innerText.trim();
                 
                 document.getElementById('editLastDate').value = cells[5].innerText;
                 
-                // 차기 검교정일이 강조되어 있을 수 있으므로, 원본 텍스트를 가져옴
                 const nextDueDateSpan = cells[6].querySelector('.next-due-date-text');
                 document.getElementById('editNextDate').value = nextDueDateSpan ? nextDueDateSpan.innerText : cells[6].innerText;
                 
@@ -408,7 +375,7 @@
                             <td class="px-6 py-4 text-sm text-gray-700">(장비번호 입력)</td>
                             <td class="px-6 py-4 text-sm text-gray-700">(자산번호 입력)</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                <!-- ★★★ 1. 신규 장비 추가 시 기본 상태를 'N/A'에서 '적합'으로 변경 ★★★ -->
+                                <!-- ★★★ 1. getStatusSpan('적합')이 '적합' 텍스트를 반환 ★★★ -->
                                 ${getStatusSpan('적합')}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-700">${new Date().toISOString().slice(0, 10)}</td>
@@ -432,9 +399,6 @@
                     if (deleteButton) {
                         const row = deleteButton.closest('tr');
                         
-                        // confirm()은 iframe 환경에서 작동하지 않을 수 있으므로, 
-                        // 실제 환경에 맞게 커스텀 모달이나 라이브러리로 대체하는 것이 좋습니다.
-                        // 여기서는 일단 기본 confirm을 사용합니다.
                         if (confirm('이 항목을 정말 삭제하시겠습니까?')) {
                             row.remove();
                             updateRowNumbers();
@@ -459,8 +423,10 @@
                         cells[1].innerText = document.getElementById('editName').value;
                         cells[2].innerText = document.getElementById('editNumber').value;
                         cells[3].innerText = document.getElementById('editAsset').value;
-                        // ★★★ 1. 'select' 드롭다운의 값을 읽어와 getStatusSpan 함수로 HTML 변경 ★★★
-                        cells[4].innerHTML = getStatusSpan(document.getElementById('editStatus').value);
+                        
+                        // ★★★ 1. getStatusSpan이 순수 텍스트를 반환하므로, innerText로 설정 ★★★
+                        cells[4].innerText = getStatusSpan(document.getElementById('editStatus').value);
+                        
                         cells[5].innerText = document.getElementById('editLastDate').value;
                         cells[6].innerText = document.getElementById('editNextDate').value; // 날짜 강조를 위해 innerText 유지
                         cells[7].innerText = document.getElementById('editManager').value;
@@ -485,11 +451,13 @@
                 });
             }
 
+Data row
             // --- 검색 기능 ---
             if (searchInput) {
                 searchInput.addEventListener('keyup', function() {
                     const searchTerm = this.value.toLowerCase(); // 검색어를 소문자로 변환
-                    const rows = tableBody.querySelectorAll('tr.data-Mrow');
+                    // ★★★ 검색이 안되던 오류 수정: 'tr.data-Mrow' -> 'tr.data-row' ★★★
+                    const rows = tableBody.querySelectorAll('tr.data-row'); 
 
                     rows.forEach(row => {
                         let rowContainsSearchTerm = false;
