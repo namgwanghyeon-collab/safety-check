@@ -54,31 +54,40 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="w-16 px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="w-16 px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 No
                             </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 장비명<span class="sort-indicator"></span>
                             </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 장비번호<span class="sort-indicator"></span>
                             </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 자산번호<span class="sort-indicator"></span>
                             </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 검교정 상태<span class="sort-indicator"></span>
                             </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 최근 검교정일<span class="sort-indicator"></span>
                             </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 차기 검교정일<span class="sort-indicator"></span>
                             </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="sortable-header px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 담당자<span class="sort-indicator"></span>
                             </th>
-                            <!-- '관리' 열은 정렬에서 제외 --><th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <!-- 2. 'font-medium' -> 'font-bold'로 변경 -->
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
                                 관리
                             </th>
                         </tr>
@@ -92,7 +101,8 @@
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00123</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
                                 <!-- 1. '정상' -> '적합'으로 변경 -->
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
+                                <span class="text-green-600">
                                     적합
                                 </span>
                             </td>
@@ -110,7 +120,8 @@
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00124</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
                                 <!-- 1. '교정 필요' -> '부적합'으로 변경 (스타일도 부적합에 맞게) -->
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
+                                <span class="text-red-600">
                                     부적합
                                 </span>
                             </td>
@@ -128,7 +139,8 @@
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00125</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
                                 <!-- 1. '기한 만료' -> '부적합'으로 변경 -->
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
+                                <span class="text-red-600">
                                     부적합
                                 </span>
                             </td>
@@ -146,7 +158,8 @@
                             <td class="px-6 py-4 text-sm text-gray-700">SAF-HMT-004</td>
                             <td class="px-6 py-4 text-sm text-gray-700">AST-00126</td>
                             <td class="px-6 py-4 text-sm text-gray-700">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                <!-- 1. 음영/굵기 제거, 텍스트 색상만 적용 -->
+                                <span class="text-gray-700">
                                     N/A
                                 </span>
                             </td>
@@ -251,25 +264,26 @@
 
             // --- '검교정 상태'에 따라 색상 Span을 생성하는 함수 (로직 변경) ---
             function getStatusSpan(statusText) {
-                let bgColor, textColor;
+                let textColor; // bgColor 변수 제거
                 const normalizedText = statusText.trim(); // 공백 제거
 
-                // ★★★ 1. 요청사항 반영: '적합' / '부적합' 두 가지 상태로 단순화 ★★★
+                // ★★★ 1. 요청사항 반영: '적합' / '부적합' 두 가지 상태로 단순화 + 음영/굵기 제거 ★★★
                 switch (normalizedText) {
                     case '적합':
-                        bgColor = 'bg-green-100';
-                        textColor = 'text-green-800';
+                        //bgColor = 'bg-green-100';
+                        textColor = 'text-green-600'; // 텍스트 색상만 지정
                         break;
                     case '부적합':
-                        bgColor = 'bg-red-100';
-                        textColor = 'text-red-800';
+                        //bgColor = 'bg-red-100';
+                        textColor = 'text-red-600'; // 텍스트 색상만 지정
                         break;
                     default: // 'N/A' 또는 그 외
-                        bgColor = 'bg-gray-100';
-                        textColor = 'text-gray-800';
+                        //bgColor = 'bg-gray-100';
+                        textColor = 'text-gray-700'; // 텍스트 색상만 지정
                         break;
                 }
-                return `<span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${bgColor} ${textColor}">
+                // 1. 음영/굵기 관련 클래스(px-3 py-1, font-semibold, rounded-full, bgColor) 모두 제거
+                return `<span class="${textColor}">
                             ${statusText}
                         </span>`;
             }
