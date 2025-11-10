@@ -10,16 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* 기본 글씨체를 Inter로 설정하고, 기본 색상을 검정색으로 지정합니다 */
+        /* ... (기존 style 태그 내용과 동일) ... */
         body {
             font-family: 'Inter', sans-serif;
             color: #000000;
         }
-        /* Tailwind의 기본 회색 음영을 사용하지 않도록 테이블 헤더 배경을 투명하게 설정 */
         table thead th {
             background-color: transparent;
         }
-        /* 정렬 아이콘을 위한 기본 스타일 */
         .sort-icon {
             display: inline-block;
             margin-left: 4px;
@@ -30,7 +28,6 @@
         .sort-icon.active {
             opacity: 1;
         }
-        /* 1. 가운데 정렬을 위해 th 내부의 button도 가운데 정렬 */
         table thead th button {
             margin-left: auto;
             margin-right: auto;
@@ -44,15 +41,31 @@
 
         <!-- 4. 검색 바 및 새 장비 추가 버튼 (레이아웃 변경) -->
         <div class="mb-4 flex items-center justify-between">
-            <!-- 4. 검색기능 추가 -->
-            <div class="relative w-full max-w-xs">
-                <!-- '담당자' 삭제 후 placeholder 텍스트 수정 -->
-                <input type="text" id="search-input" placeholder="장비명, 장비번호, 자산번호 검색..." class="block w-full border border-gray-300 rounded-lg shadow-sm p-2 pl-10 text-black">
-                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                </svg>
+            
+            <!-- 왼쪽: 검색 그룹 -->
+            <div class="flex items-center gap-4">
+                <!-- 4. 검색기능 추가 -->
+                <div class="relative w-full max-w-xs">
+                    <!-- '담당자' 삭제 후 placeholder 텍스트 수정 -->
+                    <input type="text" id="search-input" placeholder="전체 항목에서 검색..." class="block w-full border border-gray-300 rounded-lg shadow-sm p-2 pl-10 text-black">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                </div>
+
+                <!-- [신규] 년도별 필터 드롭다운 -->
+                <div class="relative w-full max-w-xs">
+                    <select id="year-filter" class="block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black bg-white appearance-none pr-8">
+                        <option value="">전체 년도 (차기)</option>
+                        <!-- 년도 옵션은 JS로 동적 추가됩니다 -->
+                    </select>
+                    <svg class="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                    </svg>
+                </div>
             </div>
             
+            <!-- 오른쪽: 버튼 -->
             <!-- 4. + 신규 장비 추가 버튼 (우측 배치 및 이름 변경) -->
             <button id="add-new-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow whitespace-nowrap">
                 + 신규 장비 추가
@@ -64,11 +77,11 @@
         <div id="notification" class="hidden p-4 rounded-lg mb-4"></div>
 
         <!-- 장비 목록 테이블 -->
+        <!-- ... (기존 테이블 HTML과 동일) ... -->
         <div class="overflow-x-auto shadow-md rounded-lg">
             <table class="min-w-full divide-y divide-gray-300">
                 <thead class="border-b border-gray-300">
                     <tr>
-                        <!-- 1. 모든 내용 가운데 정렬 (text-center 추가) -->
                         <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="no" class="flex items-center">
                                 NO
@@ -93,7 +106,6 @@
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <!-- '검교정 주기' 추가 -->
                         <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="calibration_cycle" class="flex items-center">
                                 검교정 주기
@@ -118,24 +130,19 @@
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <!-- '담당자' 삭제 -->
                         <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             관리
                         </th>
                     </tr>
                 </thead>
-                <!-- 6. 나머지 글씨 검정색, 음영 없음 -->
                 <tbody id="equipment-tbody" class="divide-y divide-gray-200">
-                    <!-- 로딩 또는 데이터 없음 메시지 -->
-                    <tr>
-                        <!-- '담당자' 삭제로 colspan="9"로 수정 -->
-                        <td colspan="9" class="py-4 px-4 text-center text-black">데이터를 불러오는 중입니다...</td>
-                    </tr>
+                    <!-- ... (기존 tbody 내용과 동일) ... -->
                 </tbody>
             </table>
         </div>
     </div>
 
+    <!-- ... (모든 모달 HTML은 기존과 동일) ... -->
     <!-- 모달: 장비 추가 / 수정 -->
     <div id="form-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-lg">
@@ -189,7 +196,6 @@
             </form>
         </div>
     </div>
-
     <!-- 모달: 삭제 확인 -->
     <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-sm">
@@ -209,7 +215,6 @@
             </div>
         </div>
     </div>
-
     <!-- 모달: 이미지 업로드 -->
     <div id="image-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden items-center justify-center">
         <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
@@ -249,13 +254,12 @@
         // 1. Supabase 설정
         // -----------------------------------------------------------------
         const SUPABASE_URL = 'https://bfoutvupvqadnrpbgagj.supabase.co';
-        // 방금 주신 정확한 키로 수정했습니다.
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmb3V0dnVwdnFhZG5ycGJnYWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2OTQ5NDMsImV4cCI6MjA3ODI3MDk0M30.u9B0HJZo1TKypF6df-EvYLYb_xT1dlufFIpMKoXaN7M';
 
-        // Supabase 클라이언트 초기화
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // ... (Supabase 설정 가이드 주석은 동일) ...
         // -----------------------------------------------------------------
         // 2. Supabase 설정 가이드 (중요!)
         // 
@@ -288,11 +292,12 @@
         let itemToDeleteId = null;
         let itemToUploadImageId = null;
         let currentSearchTerm = ''; // 4. 검색어 상태
+        let currentYearFilter = ''; // [신규] 년도 필터 상태
 
         // 전역 변수 (DOM 요소 - DOMContentLoaded에서 할당)
         let tbody, notification, formModal, deleteModal, imageModal, equipmentForm, modalTitle;
 
-        // 알림 메시지 표시 함수
+        // ... (showNotification, getNextDateClass 함수는 기존과 동일) ...
         function showNotification(message, type = 'success') {
             if (!notification) return; // DOM 로드 전 방지
             notification.textContent = message;
@@ -307,23 +312,19 @@
             setTimeout(() => notification.classList.add('hidden'), 3000);
         }
 
-        // 7. 차기 검교정일 1개월 이내 도래 시 빨간색/굵은 글씨
         function getNextDateClass(dateString) {
             if (!dateString) return '';
             
             try {
                 const nextDate = new Date(dateString);
-                // 날짜가 유효하지 않으면 반환
                 if (isNaN(nextDate.getTime())) return '';
 
                 const now = new Date();
-                // 시간은 0으로 설정하여 날짜만 비교
                 now.setHours(0, 0, 0, 0); 
                 
                 const oneMonthFromNow = new Date(now);
                 oneMonthFromNow.setMonth(now.getMonth() + 1);
 
-                // 오늘 이후이고, 한 달 이내인 경우
                 if (nextDate >= now && nextDate <= oneMonthFromNow) {
                     return 'text-red-600 font-bold';
                 }
@@ -334,18 +335,49 @@
             }
         }
 
+
+        // [신규] 년도 필터 드롭다운 채우기 함수
+        function populateYearFilter() {
+            const yearFilter = document.getElementById('year-filter');
+            if (!yearFilter) return;
+
+            // 'next_calibration_date'에서 년도만 추출하여 중복 제거
+            const years = new Set(equipmentData
+                .map(item => item.next_calibration_date ? item.next_calibration_date.substring(0, 4) : null)
+                .filter(year => year !== null) // null이나 빈 값 제외
+            );
+
+            // 숫자 순서대로 정렬
+            const sortedYears = [...years].sort((a, b) => a - b);
+
+            // 기존 옵션 (년도) 제거 (첫 번째 "전체 년도" 제외)
+            while (yearFilter.options.length > 1) {
+                yearFilter.remove(1);
+            }
+
+            // 정렬된 년도를 드롭다운에 추가
+            sortedYears.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = `${year}년`;
+                yearFilter.appendChild(option);
+            });
+
+            // 현재 선택된 필터 값을 유지
+            yearFilter.value = currentYearFilter;
+        }
+
+
         // 테이블 렌더링 함수
         function renderTable() {
             if (!tbody) return; // DOM 로드 전 방지
             tbody.innerHTML = ''; // 테이블 비우기
 
-            // 4. 검색 기능 필터링
-            // 5. 검색기능 모든 항목으로 확장
-            const filteredData = equipmentData.filter(item => {
+            // [수정] 1단계: 일반 검색어(search-input)로 필터링
+            let filteredData = equipmentData.filter(item => {
                 const name = item.name?.toLowerCase() || '';
                 const equipNum = item.equipment_number?.toLowerCase() || '';
                 const assetNum = item.asset_number?.toLowerCase() || '';
-                // 'manager' 삭제, 'calibration_cycle' 추가
                 const cycle = item.calibration_cycle?.toLowerCase() || '';
                 const status = item.status?.toLowerCase() || ''; 
                 const lastDate = item.last_calibration_date || ''; 
@@ -354,26 +386,37 @@
                 return name.includes(currentSearchTerm) ||
                        equipNum.includes(currentSearchTerm) ||
                        assetNum.includes(currentSearchTerm) ||
-                       cycle.includes(currentSearchTerm) || // 'cycle' 검색 추가
+                       cycle.includes(currentSearchTerm) || 
                        status.includes(currentSearchTerm) || 
                        lastDate.includes(currentSearchTerm) || 
                        nextDate.includes(currentSearchTerm);
             });
 
+            // [신규] 2단계: 년도(year-filter)로 추가 필터링
+            if (currentYearFilter) {
+                filteredData = filteredData.filter(item => {
+                    // 'next_calibration_date'가 존재하고, 선택된 년도로 시작하는지 확인
+                    return item.next_calibration_date && item.next_calibration_date.startsWith(currentYearFilter);
+                });
+            }
+
+
             if (equipmentData.length === 0) {
-                // colspan="9"로 수정
+                // ... (기존 코드와 동일) ...
                 tbody.innerHTML = `<tr><td colspan="9" class="py-4 px-4 text-center text-black">등록된 장비가 없습니다. '+ 신규 장비 추가' 버튼을 눌러 추가하세요.</td></tr>`;
                 return;
             }
 
+            // [수정] filteredData.length (원본 equipmentData.length가 아님)
             if (filteredData.length === 0) {
-                 // colspan="9"로 수정
+                 // ... (기존 코드와 동일) ...
                 tbody.innerHTML = `<tr><td colspan="9" class="py-4 px-4 text-center text-black">검색 결과가 없습니다.</td></tr>`;
                 return;
             }
 
             // 8. 정렬 적용 (filteredData를 사용)
             const sortedData = [...filteredData].sort((a, b) => {
+                // ... (기존 정렬 로직과 동일) ...
                 let valA = a[currentSort.key];
                 let valB = b[currentSort.key];
 
@@ -392,7 +435,7 @@
                 }
             });
 
-            // 정렬 아이콘 업데이트
+            // ... (기존 정렬 아이콘 업데이트 로직과 동일) ...
             document.querySelectorAll('th button .sort-icon').forEach(icon => {
                 icon.classList.remove('active');
             });
@@ -401,14 +444,12 @@
 
 
             sortedData.forEach((item, index) => {
+                // ... (기존 tr.innerHTML 로직과 동일) ...
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-gray-50';
                 
                 const nextDateClass = getNextDateClass(item.next_calibration_date);
 
-                // 1. 모든 내용 가운데 정렬 (text-center 추가)
-                // 2. status 음영 제거, 수정 버튼 초록색
-                // 2. 표의 모든 내용은 이미 text-center로 정렬되어 있습니다.
                 tr.innerHTML = `
                     <td class="py-3 px-4 text-sm text-black text-center">${index + 1}</td>
                     <td class="py-3 px-4 text-sm text-black text-center">
@@ -416,19 +457,15 @@
                     </td>
                     <td class="py-3 px-4 text-sm text-black text-center">${item.equipment_number || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center">${item.asset_number || ''}</td>
-                    <!-- '검교정 주기' 추가 -->
                     <td class="py-3 px-4 text-sm text-black text-center">${item.calibration_cycle || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center">${item.last_calibration_date || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center">
-                        <!-- 1. 검교정 상태 글씨 검정색으로 변경 -->
                         <span class="text-sm font-semibold text-black">
                             ${item.status}
                         </span>
                     </td>
                     <td class="py-3 px-4 text-sm text-black text-center ${nextDateClass}">${item.next_calibration_date || ''}</td>
-                    <!-- '담당자' 삭제 -->
                     <td class="py-3 px-4 text-sm text-black text-center">
-                        <!-- 2. 수정 버튼 초록색 (text-green-600) -->
                         <button data-id="${item.id}" data-action="edit" class="text-green-600 hover:text-green-900 font-medium mr-3">수정</button>
                         <button data-id="${item.id}" data-action="delete" class="text-red-600 hover:text-red-900 font-medium">삭제</button>
                     </td>
@@ -449,55 +486,48 @@
                 showNotification(`데이터 로드 실패: ${error.message}`, 'error');
             } else {
                 equipmentData = data;
-                renderTable();
+                populateYearFilter(); // [신규] 년도 필터 채우기
+                renderTable(); // [수정] 데이터 로드 후 테이블 렌더링
             }
         }
 
-        // 모달 열기/닫기
+        // ... (openModal, closeModal, openEditModal, openDeleteModal, openImageModal 함수는 기존과 동일) ...
         function openModal(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
         function closeModal(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
 
-        // '수정' 모달 열기 (이벤트 위임 사용)
         function openEditModal(id) {
-            // 3. 수정 버튼 버그 수정: e.id (number)와 id (string)를 비교하기 위해 == 사용
             const item = equipmentData.find(e => e.id == id);
             if (!item) return;
-
+            // ... (기존 openEditModal 내용과 동일) ...
             document.getElementById('equipment-id').value = item.id;
             document.getElementById('name').value = item.name;
             document.getElementById('equipment_number').value = item.equipment_number;
             document.getElementById('asset_number').value = item.asset_number;
-            document.getElementById('calibration_cycle').value = item.calibration_cycle; // 'calibration_cycle' 추가
+            document.getElementById('calibration_cycle').value = item.calibration_cycle; 
             document.getElementById('status').value = item.status;
             document.getElementById('last_calibration_date').value = item.last_calibration_date;
             document.getElementById('next_calibration_date').value = item.next_calibration_date;
-            // 'manager' 삭제
-
             modalTitle.textContent = '장비 정보 수정';
             openModal(formModal);
         }
         
-        // '삭제' 모달 열기 (이벤트 위임 사용)
         function openDeleteModal(id) {
+            // ... (기존 openDeleteModal 내용과 동일) ...
             itemToDeleteId = id;
             document.getElementById('delete-password').value = '';
             document.getElementById('delete-error').classList.add('hidden');
             openModal(deleteModal);
         }
 
-        // '사진 업로드' 모달 열기 (이벤트 위임 사용)
         function openImageModal(id) {
-            // 4. 장비명 링크 버그 수정: e.id (number)와 id (string)를 비교하기 위해 == 사용
+            // ... (기존 openImageModal 내용과 동일) ...
             const item = equipmentData.find(e => e.id == id);
             if (!item) return;
-
             itemToUploadImageId = id;
             document.getElementById('image-upload-form').reset();
             document.getElementById('image-modal-title').textContent = `[${item.name}] 사진 관리`;
-            
             const currentImage = document.getElementById('current-image');
             const noImage = document.getElementById('no-image');
-
             if (item.image_url) {
                 currentImage.src = item.image_url;
                 currentImage.classList.remove('hidden');
@@ -506,7 +536,6 @@
                 currentImage.classList.add('hidden');
                 noImage.classList.remove('hidden');
             }
-            
             openModal(imageModal);
         }
 
@@ -526,7 +555,9 @@
             // --- 이벤트 리스너 부착 ---
 
             // '새 장비 등록' 모달 열기
-            document.getElementById('add-new-btn').addEventListener('click', () => {
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            document.getElementById('add-new-btn')?.addEventListener('click', () => {
+                // ... (기존 코드와 동일) ...
                 equipmentForm.reset();
                 document.getElementById('equipment-id').value = '';
                 modalTitle.textContent = '새 장비 등록';
@@ -534,100 +565,102 @@
             });
             
             // 4. 검색 입력 이벤트
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', (e) => {
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            document.getElementById('search-input')?.addEventListener('input', (e) => {
                 currentSearchTerm = e.target.value.toLowerCase();
                 renderTable(); // 검색어 입력 시마다 테이블 다시 그리기
             });
 
-            // 테이블 내 버튼 클릭 이벤트 위임
-            tbody.addEventListener('click', (e) => {
-                const target = e.target.closest('button, a'); // 클릭한 대상이 버튼 또는 링크인지 확인
-                if (!target) return;
+            // [신규] 년도 필터 변경 이벤트
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            document.getElementById('year-filter')?.addEventListener('change', (e) => {
+                currentYearFilter = e.target.value;
+                renderTable(); // 년도 선택 시마다 테이블 다시 그리기
+            });
 
+            // 테이블 내 버튼 클릭 이벤트 위임
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            tbody?.addEventListener('click', (e) => {
+                // ... (기존 코드와 동일) ...
+                const target = e.target.closest('button, a'); 
+                if (!target) return;
                 const id = target.dataset.id;
                 const action = target.dataset.action;
-
                 if (action === 'edit') {
                     openEditModal(id);
                 } else if (action === 'delete') {
                     openDeleteModal(id);
                 } else if (action === 'open-image') {
-                    e.preventDefault(); // 링크 기본 동작(페이지 이동) 방지
+                    e.preventDefault(); 
                     openImageModal(id);
                 }
             });
 
             // 8. 정렬 버튼 클릭 이벤트
             document.querySelectorAll('th button[data-sort]').forEach(button => {
+                // ... (기존 코드와 동일) ...
                 button.addEventListener('click', () => {
                     const key = button.dataset.sort;
-                    
                     if (currentSort.key === key) {
                         currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
                     } else {
                         currentSort.key = key;
                         currentSort.direction = 'asc';
                     }
-                    
                     renderTable();
                 });
             });
 
             // 폼/삭제 모달 닫기 버튼
-            document.getElementById('modal-close-btn').addEventListener('click', () => closeModal(formModal));
-            document.getElementById('delete-cancel-btn').addEventListener('click', () => closeModal(deleteModal));
-            document.getElementById('image-modal-close-btn').addEventListener('click', () => closeModal(imageModal));
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            document.getElementById('modal-close-btn')?.addEventListener('click', () => closeModal(formModal));
+            document.getElementById('delete-cancel-btn')?.addEventListener('click', () => closeModal(deleteModal));
+            document.getElementById('image-modal-close-btn')?.addEventListener('click', () => closeModal(imageModal));
 
             // 폼 제출 (추가/수정)
-            equipmentForm.addEventListener('submit', async (e) => {
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            equipmentForm?.addEventListener('submit', async (e) => {
+                // ... (기존 코드와 동일) ...
                 e.preventDefault();
                 const id = document.getElementById('equipment-id').value;
-                
                 const formData = {
                     name: document.getElementById('name').value,
                     equipment_number: document.getElementById('equipment_number').value || null,
                     asset_number: document.getElementById('asset_number').value || null,
-                    calibration_cycle: document.getElementById('calibration_cycle').value || null, // 'calibration_cycle' 추가
+                    calibration_cycle: document.getElementById('calibration_cycle').value || null, 
                     status: document.getElementById('status').value,
                     last_calibration_date: document.getElementById('last_calibration_date').value || null,
                     next_calibration_date: document.getElementById('next_calibration_date').value || null,
-                    // 'manager' 삭제
                 };
-
                 let error;
                 if (id) {
-                    // 수정
                     const { error: updateError } = await db.from('equipment').update(formData).eq('id', id);
                     error = updateError;
                 } else {
-                    // 추가
                     const { error: insertError } = await db.from('equipment').insert([formData]);
                     error = insertError;
                 }
-
                 if (error) {
                     console.error('저장 오류:', error);
                     showNotification(`저장 실패: ${error.message}`, 'error');
                 } else {
                     showNotification(id ? '성공적으로 수정되었습니다.' : '성공적으로 등록되었습니다.', 'success');
                     closeModal(formModal);
-                    fetchEquipment(); // 데이터 새로고침
+                    fetchEquipment(); // [중요] 데이터 새로고침 (년도 필터도 함께 업데이트됨)
                 }
             });
 
             // 삭제 확인
-            document.getElementById('delete-confirm-btn').addEventListener('click', async () => {
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            document.getElementById('delete-confirm-btn')?.addEventListener('click', async () => {
+                // ... (기존 코드와 동일) ...
                 const password = document.getElementById('delete-password').value;
-                
                 if (password !== '0000') {
                     document.getElementById('delete-error').classList.remove('hidden');
                     return;
                 }
-
                 if (itemToDeleteId) {
                     const { error } = await db.from('equipment').delete().eq('id', itemToDeleteId);
-                    
                     if (error) {
                         console.error('삭제 오류:', error);
                         showNotification(`삭제 실패: ${error.message}`, 'error');
@@ -635,51 +668,42 @@
                         showNotification('성공적으로 삭제되었습니다.', 'success');
                         closeModal(deleteModal);
                         itemToDeleteId = null;
-                        fetchEquipment(); // 데이터 새로고침
+                        fetchEquipment(); // [중요] 데이터 새로고침 (년도 필터도 함께 업데이트됨)
                     }
                 }
             });
 
             // 5. 사진 업로드 처리
-            document.getElementById('image-upload-form').addEventListener('submit', async (e) => {
+            // [FIX] 옵셔널 체이닝(?.)을 추가하여 null 오류 방지
+            document.getElementById('image-upload-form')?.addEventListener('submit', async (e) => {
+                // ... (기존 코드와 동일) ...
                 e.preventDefault();
                 const fileInput = document.getElementById('image-file');
                 const file = fileInput.files[0];
-
                 if (!file || !itemToUploadImageId) {
                     showNotification('파일을 선택해주세요.', 'error');
                     return;
                 }
-
                 const filePath = `public/${itemToUploadImageId}-${file.name}`;
-
                 const { data: uploadData, error: uploadError } = await db.storage
                     .from('equipment-images')
-                    .upload(filePath, file, {
-                        cacheControl: '3600',
-                        upsert: true
-                    });
-
+                    .upload(filePath, file, { cacheControl: '3600', upsert: true });
                 if (uploadError) {
                     console.error('이미지 업로드 오류:', uploadError);
                     showNotification(`이미지 업로드 실패: ${uploadError.message}`, 'error');
                     return;
                 }
-
                 const { data: publicUrlData } = db.storage
                     .from('equipment-images')
                     .getPublicUrl(uploadData.path);
-
                 if (!publicUrlData.publicUrl) {
                     showNotification('이미지 URL을 가져오는 데 실패했습니다.', 'error');
                     return;
                 }
-
                 const { error: dbError } = await db
                     .from('equipment')
                     .update({ image_url: publicUrlData.publicUrl })
                     .eq('id', itemToUploadImageId);
-                
                 if (dbError) {
                     console.error('DB 업데이트 오류:', dbError);
                     showNotification(`DB 업데이트 실패: ${dbError.message}`, 'error');
@@ -687,12 +711,13 @@
                     showNotification('사진이 성공적으로 업로드되었습니다.', 'success');
                     closeModal(imageModal);
                     itemToUploadImageId = null;
-                    fetchEquipment(); // 데이터 새로고침
+                    fetchEquipment(); // [중요] 데이터 새로고침 (이미지 URL이 업데이트됨)
                 }
             });
 
             // --- 초기 데이터 로드 ---
             if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+                // ... (기존 코드와 동일) ...
                 showNotification('Supabase URL과 Key를 설정해야 합니다. 스크립트 상단의 설정 가이드를 확인하세요.', 'error');
                 if(tbody) tbody.innerHTML = `<tr><td colspan="9" class="py-4 px-4 text-center text-red-600 font-bold">Supabase가 설정되지 않았습니다. 코드 내의 가이드를 확인해주세요.</td></tr>`;
                 return;
