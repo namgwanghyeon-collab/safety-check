@@ -577,8 +577,8 @@
                                 const path = new URL(url).pathname.split(`/${BUCKET_NAME}/`)[1];
                                 if(path) deletePaths.push(path);
                             } catch (e) {
-                                // ★★★ [오류 수정] console.warn(string, variable, object) -> console.warn(string + variable, object) ★★★
-                                console.warn("삭제할 수 없는 URL입니다: " + url, e);
+                                // ★★★ [오류 수정] console.warn(string, variable, object) -> console.warn(string + variable + string + object) ★★★
+                                console.warn("삭제할 수 없는 URL입니다: " + url + " 오류: " + e.message);
                             }
                         });
                         
@@ -666,8 +666,8 @@
                                     const path = new URL(url).pathname.split(`/${BUCKET_NAME}/`)[1];
                                     if(path) deletePaths.push(path);
                                 } catch (e) {
-                                    // ★★★ [오류 수정] console.warn(string, variable, object) -> console.warn(string + variable, object) ★★★
-                                    console.warn("삭제할 수 없는 URL입니다: " + url, e);
+                                    // ★★★ [오류 수정] console.warn(string, variable, object) -> console.warn(string + variable + string + object) ★★★
+                                    console.warn("삭제할 수 없는 URL입니다: " + url + " 오류: " + e.message);
                                 }
                             });
                             if(deletePaths.length > 0) {
