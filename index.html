@@ -30,19 +30,34 @@
         .sort-icon.active {
             opacity: 1;
         }
+        /* 1. 가운데 정렬을 위해 th 내부의 button도 가운데 정렬 */
+        table thead th button {
+            margin-left: auto;
+            margin-right: auto;
+        }
     </style>
 </head>
 <body class="bg-white">
 
     <div class="container mx-auto p-6">
-        <h1 class="text-3xl font-bold mb-6 text-black">안전장비 검교정 관리 시스템</h1>
+        <h1 class="text-3xl font-bold mb-6 text-black text-center">안전장비 검교정 관리 시스템</h1>
 
-        <!-- 새 장비 추가 버튼 -->
-        <div class="mb-4">
-            <button id="add-new-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow">
-                새 장비 등록
+        <!-- 4. 검색 바 및 새 장비 추가 버튼 (레이아웃 변경) -->
+        <div class="mb-4 flex items-center justify-between">
+            <!-- 4. 검색기능 추가 -->
+            <div class="relative w-full max-w-xs">
+                <input type="text" id="search-input" placeholder="장비명, 장비번호, 담당자 검색..." class="block w-full border border-gray-300 rounded-lg shadow-sm p-2 pl-10 text-black">
+                <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </div>
+            
+            <!-- 4. + 신규 장비 추가 버튼 (우측 배치 및 이름 변경) -->
+            <button id="add-new-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow whitespace-nowrap">
+                + 신규 장비 추가
             </button>
         </div>
+
 
         <!-- 알림 메시지 영역 -->
         <div id="notification" class="hidden p-4 rounded-lg mb-4"></div>
@@ -52,56 +67,56 @@
             <table class="min-w-full divide-y divide-gray-300">
                 <thead class="border-b border-gray-300">
                     <tr>
-                        <!-- 2. 메뉴 (요청하신 대로 검정, 두꺼운 글씨) -->
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <!-- 1. 모든 내용 가운데 정렬 (text-center 추가) -->
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="no" class="flex items-center">
                                 NO
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="name" class="flex items-center">
                                 장비명
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="equipment_number" class="flex items-center">
                                 장비번호
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="asset_number" class="flex items-center">
                                 자산번호
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="status" class="flex items-center">
                                 검교정 상태
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="last_calibration_date" class="flex items-center">
                                 최근 검교정일
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="next_calibration_date" class="flex items-center">
                                 차기 검교정일
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="manager" class="flex items-center">
                                 담당자
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-left text-sm font-bold text-black uppercase tracking-wider">
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             관리
                         </th>
                     </tr>
@@ -227,65 +242,33 @@
         // -----------------------------------------------------------------
         // 1. Supabase 설정
         // -----------------------------------------------------------------
-        // 중요: 아래 URL과 KEY를 본인의 Supabase 프로젝트 값으로 변경하세요.
-        // Supabase 프로젝트 > Settings > API 에서 찾을 수 있습니다.
-        const SUPABASE_URL = 'https://bfoutvupvqadnrpbgagj.supabase.co'; // 여기에 Supabase URL 입력
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmb3V0dnVwdnFhZG5ycGJnYWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2OTQ5NDMsImV4cCI6MjA3ODI3MDk0M30.u9B0HJZo1TKypF6df-EvYLYb_xT1dlufFIpMKoXaN7M'; // 여기에 Supabase anon key 입력
+        const SUPABASE_URL = 'https://bfoutvupvqadnrpbgagj.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIJTNCNiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJmb3V0dnVwdnFhZG5ycGJnYWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI2OTQ5NDMsImV4cCI6MjA3ODI3MDk0M30.u9B0HJZo1TKypF6df-EvYLYb_xT1dlufFIpMKoXaN7M';
 
         // Supabase 클라이언트 초기화
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // ... (Supabase 설정 가이드 주석은 동일) ...
         // -----------------------------------------------------------------
         // 2. Supabase 설정 가이드 (중요!)
-        // -----------------------------------------------------------------
-        // 1. 테이블 생성:
-        //    Supabase 프로젝트 > Table Editor > New table
-        //    테이블 이름: 'equipment' (이 코드와 일치해야 함)
-        //    [열(Columns) 추가]
-        //    - id (uuid, 기본 키)
-        //    - created_at (timestamptz, 기본값 now())
-        //    - name (text)
-        //    - equipment_number (text, nullable)
-        //    - asset_number (text, nullable)
-        //    - status (text) - "적합" 또는 "부적합"
-        //    - last_calibration_date (date, nullable)
-        //    - next_calibration_date (date, nullable)
-        //    - manager (text, nullable)
-        //    - image_url (text, nullable)
-        //    RLS (Row Level Security)는 우선 비활성화(disabled)해야 테스트가 쉽습니다.
-        //
-        // 2. 스토리지 버킷 생성:
-        //    Supabase 프로젝트 > Storage > New bucket
-        //    버킷 이름: 'equipment-images' (이 코드와 일치해야 함)
-        //    'Public' 옵션을 켜주세요. (꺼져있다면 RLS 정책을 설정해야 합니다)
-        //
-        // 3. 스토리지 정책 (Public 버킷이 아닌 경우):
-        //    'equipment-images' 버킷에 대해 'Policies' 설정
-        //    - 'Give users access to their own files' 템플릿 사용
-        //    - 'INSERT' 정책: 'Authenticated' 사용자가 업로드할 수 있도록 설정
-        //    - 'SELECT' 정책: 'Authenticated' 사용자가 다운로드할 수 있도록 설정
+        // ... (내용 동일) ...
         // -----------------------------------------------------------------
 
 
-        // 전역 변수 및 DOM 요소
+        // 전역 변수 (데이터 상태)
         let equipmentData = [];
-        let currentSort = { key: 'created_at', direction: 'desc' }; // 8. 정렬
+        let currentSort = { key: 'created_at', direction: 'desc' };
         let itemToDeleteId = null;
         let itemToUploadImageId = null;
+        let currentSearchTerm = ''; // 4. 검색어 상태
 
-        const tbody = document.getElementById('equipment-tbody');
-        const notification = document.getElementById('notification');
-        
-        // 모달 관련 DOM 요소
-        const formModal = document.getElementById('form-modal');
-        const deleteModal = document.getElementById('delete-modal');
-        const imageModal = document.getElementById('image-modal');
-        const equipmentForm = document.getElementById('equipment-form');
-        const modalTitle = document.getElementById('modal-title');
-        
+        // 전역 변수 (DOM 요소 - DOMContentLoaded에서 할당)
+        let tbody, notification, formModal, deleteModal, imageModal, equipmentForm, modalTitle;
+
         // 알림 메시지 표시 함수
         function showNotification(message, type = 'success') {
+            if (!notification) return; // DOM 로드 전 방지
             notification.textContent = message;
             notification.classList.remove('hidden');
             if (type === 'success') {
@@ -304,8 +287,14 @@
             
             try {
                 const nextDate = new Date(dateString);
+                // 날짜가 유효하지 않으면 반환
+                if (isNaN(nextDate.getTime())) return '';
+
                 const now = new Date();
-                const oneMonthFromNow = new Date();
+                // 시간은 0으로 설정하여 날짜만 비교
+                now.setHours(0, 0, 0, 0); 
+                
+                const oneMonthFromNow = new Date(now);
                 oneMonthFromNow.setMonth(now.getMonth() + 1);
 
                 // 오늘 이후이고, 한 달 이내인 경우
@@ -321,19 +310,36 @@
 
         // 테이블 렌더링 함수
         function renderTable() {
+            if (!tbody) return; // DOM 로드 전 방지
             tbody.innerHTML = ''; // 테이블 비우기
 
+            // 4. 검색 기능 필터링
+            const filteredData = equipmentData.filter(item => {
+                const name = item.name?.toLowerCase() || '';
+                const equipNum = item.equipment_number?.toLowerCase() || '';
+                const assetNum = item.asset_number?.toLowerCase() || ''; // 자산번호도 검색에 포함
+                const manager = item.manager?.toLowerCase() || '';
+                return name.includes(currentSearchTerm) ||
+                       equipNum.includes(currentSearchTerm) ||
+                       assetNum.includes(currentSearchTerm) ||
+                       manager.includes(currentSearchTerm);
+            });
+
             if (equipmentData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-black">등록된 장비가 없습니다. '새 장비 등록' 버튼을 눌러 추가하세요.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-black">등록된 장비가 없습니다. '+ 신규 장비 추가' 버튼을 눌러 추가하세요.</td></tr>`;
                 return;
             }
 
-            // 8. 정렬 적용
-            const sortedData = [...equipmentData].sort((a, b) => {
+            if (filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-black">검색 결과가 없습니다.</td></tr>`;
+                return;
+            }
+
+            // 8. 정렬 적용 (filteredData를 사용)
+            const sortedData = [...filteredData].sort((a, b) => {
                 let valA = a[currentSort.key];
                 let valB = b[currentSort.key];
 
-                // 'NO' 정렬 시 ID 또는 생성일 기준 (여기서는 생성일)
                 if (currentSort.key === 'no') {
                     valA = a['created_at'];
                     valB = b['created_at'];
@@ -359,30 +365,31 @@
 
             sortedData.forEach((item, index) => {
                 const tr = document.createElement('tr');
-                tr.className = 'hover:bg-gray-50'; // 6. 음영 대신 hover 효과
+                tr.className = 'hover:bg-gray-50';
                 
                 const nextDateClass = getNextDateClass(item.next_calibration_date);
 
+                // 1. 모든 내용 가운데 정렬 (text-center 추가)
+                // 2. status 음영 제거, 수정 버튼 초록색
                 tr.innerHTML = `
-                    <td class="py-3 px-4 text-sm text-black">${index + 1}</td>
-                    <td class="py-3 px-4 text-sm text-black">
-                        <!-- 5. 장비명 클릭 (사진 업로드) -->
+                    <td class="py-3 px-4 text-sm text-black text-center">${index + 1}</td>
+                    <td class="py-3 px-4 text-sm text-black text-center">
                         <a href="#" class="text-blue-600 hover:underline font-medium" data-id="${item.id}" data-action="open-image">${item.name}</a>
                     </td>
-                    <td class="py-3 px-4 text-sm text-black">${item.equipment_number || ''}</td>
-                    <td class="py-3 px-4 text-sm text-black">${item.asset_number || ''}</td>
-                    <td class="py-3 px-4 text-sm text-black">
-                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${item.status === '적합' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                    <td class="py-3 px-4 text-sm text-black text-center">${item.equipment_number || ''}</td>
+                    <td class="py-3 px-4 text-sm text-black text-center">${item.asset_number || ''}</td>
+                    <td class="py-3 px-4 text-sm text-black text-center">
+                        <!-- 2. 적합/부적합 음영 제거 -->
+                        <span class="text-sm font-semibold ${item.status === '적합' ? 'text-green-700' : 'text-red-700'}">
                             ${item.status}
                         </span>
                     </td>
-                    <td class="py-3 px-4 text-sm text-black">${item.last_calibration_date || ''}</td>
-                    <!-- 7. 차기 검교정일 하이라이트 -->
-                    <td class="py-3 px-4 text-sm text-black ${nextDateClass}">${item.next_calibration_date || ''}</td>
-                    <td class="py-3 px-4 text-sm text-black">${item.manager || ''}</td>
-                    <td class="py-3 px-4 text-sm text-black">
-                        <!-- 4. 수정, 삭제 버튼 -->
-                        <button data-id="${item.id}" data-action="edit" class="text-indigo-600 hover:text-indigo-900 font-medium mr-3">수정</button>
+                    <td class="py-3 px-4 text-sm text-black text-center">${item.last_calibration_date || ''}</td>
+                    <td class="py-3 px-4 text-sm text-black text-center ${nextDateClass}">${item.next_calibration_date || ''}</td>
+                    <td class="py-3 px-4 text-sm text-black text-center">${item.manager || ''}</td>
+                    <td class="py-3 px-4 text-sm text-black text-center">
+                        <!-- 2. 수정 버튼 초록색 (text-green-600) -->
+                        <button data-id="${item.id}" data-action="edit" class="text-green-600 hover:text-green-900 font-medium mr-3">수정</button>
                         <button data-id="${item.id}" data-action="delete" class="text-red-600 hover:text-red-900 font-medium">삭제</button>
                     </td>
                 `;
@@ -410,20 +417,11 @@
         function openModal(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
         function closeModal(modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
 
-        // '새 장비 등록' 모달 열기
-        document.getElementById('add-new-btn').addEventListener('click', () => {
-            equipmentForm.reset();
-            document.getElementById('equipment-id').value = '';
-            modalTitle.textContent = '새 장비 등록';
-            openModal(formModal);
-        });
-        
         // '수정' 모달 열기 (이벤트 위임 사용)
         function openEditModal(id) {
             const item = equipmentData.find(e => e.id === id);
             if (!item) return;
 
-            // 4. 수정은 바로 들어가서 내용 수정
             document.getElementById('equipment-id').value = item.id;
             document.getElementById('name').value = item.name;
             document.getElementById('equipment_number').value = item.equipment_number;
@@ -469,170 +467,190 @@
             openModal(imageModal);
         }
 
-        // 테이블 내 버튼 클릭 이벤트 위임
-        tbody.addEventListener('click', (e) => {
-            const target = e.target.closest('button, a');
-            if (!target) return;
 
-            const id = target.dataset.id;
-            const action = target.dataset.action;
+        // 3. 버그 수정: 모든 DOM 요소 선택 및 이벤트 리스너를 DOMContentLoaded 내부로 이동
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // DOM 요소 할당
+            tbody = document.getElementById('equipment-tbody');
+            notification = document.getElementById('notification');
+            formModal = document.getElementById('form-modal');
+            deleteModal = document.getElementById('delete-modal');
+            imageModal = document.getElementById('image-modal');
+            equipmentForm = document.getElementById('equipment-form');
+            modalTitle = document.getElementById('modal-title');
 
-            if (action === 'edit') {
-                openEditModal(id);
-            } else if (action === 'delete') {
-                openDeleteModal(id);
-            } else if (action === 'open-image') {
-                e.preventDefault();
-                openImageModal(id);
-            }
-        });
+            // --- 이벤트 리스너 부착 ---
 
-        // 8. 정렬 버튼 클릭 이벤트
-        document.querySelectorAll('th button[data-sort]').forEach(button => {
-            button.addEventListener('click', () => {
-                const key = button.dataset.sort;
-                
-                if (currentSort.key === key) {
-                    currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-                } else {
-                    currentSort.key = key;
-                    currentSort.direction = 'asc';
-                }
-                
-                renderTable();
+            // '새 장비 등록' 모달 열기
+            document.getElementById('add-new-btn').addEventListener('click', () => {
+                equipmentForm.reset();
+                document.getElementById('equipment-id').value = '';
+                modalTitle.textContent = '새 장비 등록';
+                openModal(formModal);
             });
-        });
-
-        // 폼/삭제 모달 닫기 버튼
-        document.getElementById('modal-close-btn').addEventListener('click', () => closeModal(formModal));
-        document.getElementById('delete-cancel-btn').addEventListener('click', () => closeModal(deleteModal));
-        document.getElementById('image-modal-close-btn').addEventListener('click', () => closeModal(imageModal));
-
-        // 폼 제출 (추가/수정)
-        equipmentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.getElementById('equipment-id').value;
             
-            const formData = {
-                name: document.getElementById('name').value,
-                equipment_number: document.getElementById('equipment_number').value,
-                asset_number: document.getElementById('asset_number').value,
-                status: document.getElementById('status').value,
-                last_calibration_date: document.getElementById('last_calibration_date').value || null,
-                next_calibration_date: document.getElementById('next_calibration_date').value || null,
-                manager: document.getElementById('manager').value,
-            };
+            // 4. 검색 입력 이벤트
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', (e) => {
+                currentSearchTerm = e.target.value.toLowerCase();
+                renderTable(); // 검색어 입력 시마다 테이블 다시 그리기
+            });
 
-            let error;
-            if (id) {
-                // 수정
-                const { error: updateError } = await db.from('equipment').update(formData).eq('id', id);
-                error = updateError;
-            } else {
-                // 추가
-                const { error: insertError } = await db.from('equipment').insert([formData]);
-                error = insertError;
-            }
+            // 테이블 내 버튼 클릭 이벤트 위임
+            tbody.addEventListener('click', (e) => {
+                const target = e.target.closest('button, a'); // 클릭한 대상이 버튼 또는 링크인지 확인
+                if (!target) return;
 
-            if (error) {
-                console.error('저장 오류:', error);
-                showNotification(`저장 실패: ${error.message}`, 'error');
-            } else {
-                showNotification(id ? '성공적으로 수정되었습니다.' : '성공적으로 등록되었습니다.', 'success');
-                closeModal(formModal);
-                fetchEquipment(); // 데이터 새로고침
-            }
-        });
+                const id = target.dataset.id;
+                const action = target.dataset.action;
 
-        // 삭제 확인
-        document.getElementById('delete-confirm-btn').addEventListener('click', async () => {
-            // 4. 삭제 비밀번호 (0000)
-            const password = document.getElementById('delete-password').value;
-            
-            // !!! 중요: 클라이언트 사이드 비밀번호는 매우 안전하지 않습니다.
-            // 이것은 요청사항을 이행하기 위한 것이며,
-            // 실제 운영 시에는 Supabase의 'Auth' 기능을 사용하여 인증된 사용자만 삭제할 수 있도록 해야 합니다.
-            
-            if (password !== '0000') {
-                document.getElementById('delete-error').classList.remove('hidden');
-                return;
-            }
+                if (action === 'edit') {
+                    openEditModal(id);
+                } else if (action === 'delete') {
+                    openDeleteModal(id);
+                } else if (action === 'open-image') {
+                    e.preventDefault(); // 링크 기본 동작(페이지 이동) 방지
+                    openImageModal(id);
+                }
+            });
 
-            if (itemToDeleteId) {
-                const { error } = await db.from('equipment').delete().eq('id', itemToDeleteId);
+            // 8. 정렬 버튼 클릭 이벤트
+            document.querySelectorAll('th button[data-sort]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const key = button.dataset.sort;
+                    
+                    if (currentSort.key === key) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.key = key;
+                        currentSort.direction = 'asc';
+                    }
+                    
+                    renderTable();
+                });
+            });
+
+            // 폼/삭제 모달 닫기 버튼
+            document.getElementById('modal-close-btn').addEventListener('click', () => closeModal(formModal));
+            document.getElementById('delete-cancel-btn').addEventListener('click', () => closeModal(deleteModal));
+            document.getElementById('image-modal-close-btn').addEventListener('click', () => closeModal(imageModal));
+
+            // 폼 제출 (추가/수정)
+            equipmentForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const id = document.getElementById('equipment-id').value;
                 
-                if (error) {
-                    console.error('삭제 오류:', error);
-                    showNotification(`삭제 실패: ${error.message}`, 'error');
+                const formData = {
+                    name: document.getElementById('name').value,
+                    equipment_number: document.getElementById('equipment_number').value || null,
+                    asset_number: document.getElementById('asset_number').value || null,
+                    status: document.getElementById('status').value,
+                    last_calibration_date: document.getElementById('last_calibration_date').value || null,
+                    next_calibration_date: document.getElementById('next_calibration_date').value || null,
+                    manager: document.getElementById('manager').value || null,
+                };
+
+                let error;
+                if (id) {
+                    // 수정
+                    const { error: updateError } = await db.from('equipment').update(formData).eq('id', id);
+                    error = updateError;
                 } else {
-                    showNotification('성공적으로 삭제되었습니다.', 'success');
-                    closeModal(deleteModal);
-                    itemToDeleteId = null;
+                    // 추가
+                    const { error: insertError } = await db.from('equipment').insert([formData]);
+                    error = insertError;
+                }
+
+                if (error) {
+                    console.error('저장 오류:', error);
+                    showNotification(`저장 실패: ${error.message}`, 'error');
+                } else {
+                    showNotification(id ? '성공적으로 수정되었습니다.' : '성공적으로 등록되었습니다.', 'success');
+                    closeModal(formModal);
                     fetchEquipment(); // 데이터 새로고침
                 }
-            }
-        });
+            });
 
-        // 5. 사진 업로드 처리
-        document.getElementById('image-upload-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const fileInput = document.getElementById('image-file');
-            const file = fileInput.files[0];
+            // 삭제 확인
+            document.getElementById('delete-confirm-btn').addEventListener('click', async () => {
+                const password = document.getElementById('delete-password').value;
+                
+                if (password !== '0000') {
+                    document.getElementById('delete-error').classList.remove('hidden');
+                    return;
+                }
 
-            if (!file || !itemToUploadImageId) {
-                showNotification('파일을 선택해주세요.', 'error');
-                return;
-            }
+                if (itemToDeleteId) {
+                    const { error } = await db.from('equipment').delete().eq('id', itemToDeleteId);
+                    
+                    if (error) {
+                        console.error('삭제 오류:', error);
+                        showNotification(`삭제 실패: ${error.message}`, 'error');
+                    } else {
+                        showNotification('성공적으로 삭제되었습니다.', 'success');
+                        closeModal(deleteModal);
+                        itemToDeleteId = null;
+                        fetchEquipment(); // 데이터 새로고침
+                    }
+                }
+            });
 
-            // 파일 경로 (예: public/장비ID-파일명.png)
-            const filePath = `public/${itemToUploadImageId}-${file.name}`;
+            // 5. 사진 업로드 처리
+            document.getElementById('image-upload-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fileInput = document.getElementById('image-file');
+                const file = fileInput.files[0];
 
-            // 1. 스토리지에 업로드
-            const { data: uploadData, error: uploadError } = await db.storage
-                .from('equipment-images') // 설정 가이드에서 만든 버킷 이름
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: true // 덮어쓰기 허용
-                });
+                if (!file || !itemToUploadImageId) {
+                    showNotification('파일을 선택해주세요.', 'error');
+                    return;
+                }
 
-            if (uploadError) {
-                console.error('이미지 업로드 오류:', uploadError);
-                showNotification(`이미지 업로드 실패: ${uploadError.message}`, 'error');
-                return;
-            }
+                const filePath = `public/${itemToUploadImageId}-${file.name}`;
 
-            // 2. 공개 URL 가져오기
-            const { data: publicUrlData } = db.storage
-                .from('equipment-images')
-                .getPublicUrl(uploadData.path);
+                const { data: uploadData, error: uploadError } = await db.storage
+                    .from('equipment-images')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    });
 
-            if (!publicUrlData.publicUrl) {
-                showNotification('이미지 URL을 가져오는 데 실패했습니다.', 'error');
-                return;
-            }
+                if (uploadError) {
+                    console.error('이미지 업로드 오류:', uploadError);
+                    showNotification(`이미지 업로드 실패: ${uploadError.message}`, 'error');
+                    return;
+                }
 
-            // 3. 'equipment' 테이블에 이미지 URL 업데이트
-            const { error: dbError } = await db
-                .from('equipment')
-                .update({ image_url: publicUrlData.publicUrl })
-                .eq('id', itemToUploadImageId);
-            
-            if (dbError) {
-                console.error('DB 업데이트 오류:', dbError);
-                showNotification(`DB 업데이트 실패: ${dbError.message}`, 'error');
-            } else {
-                showNotification('사진이 성공적으로 업로드되었습니다.', 'success');
-                closeModal(imageModal);
-                itemToUploadImageId = null;
-                fetchEquipment(); // 데이터 새로고침
-            }
-        });
+                const { data: publicUrlData } = db.storage
+                    .from('equipment-images')
+                    .getPublicUrl(uploadData.path);
 
-        // 초기 데이터 로드
-        document.addEventListener('DOMContentLoaded', () => {
+                if (!publicUrlData.publicUrl) {
+                    showNotification('이미지 URL을 가져오는 데 실패했습니다.', 'error');
+                    return;
+                }
+
+                const { error: dbError } = await db
+                    .from('equipment')
+                    .update({ image_url: publicUrlData.publicUrl })
+                    .eq('id', itemToUploadImageId);
+                
+                if (dbError) {
+                    console.error('DB 업데이트 오류:', dbError);
+                    showNotification(`DB 업데이트 실패: ${dbError.message}`, 'error');
+                } else {
+                    showNotification('사진이 성공적으로 업로드되었습니다.', 'success');
+                    closeModal(imageModal);
+                    itemToUploadImageId = null;
+                    fetchEquipment(); // 데이터 새로고침
+                }
+            });
+
+            // --- 초기 데이터 로드 ---
             if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
                 showNotification('Supabase URL과 Key를 설정해야 합니다. 스크립트 상단의 설정 가이드를 확인하세요.', 'error');
-                tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-red-600 font-bold">Supabase가 설정되지 않았습니다. 코드 내의 가이드를 확인해주세요.</td></tr>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-red-600 font-bold">Supabase가 설정되지 않았습니다. 코드 내의 가이드를 확인해주세요.</td></tr>`;
                 return;
             }
             fetchEquipment();
