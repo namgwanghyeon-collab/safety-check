@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>안전장비 검교정 현황 (Firebase)</title>
+    <title>안전장비 검교정 현황 (v13-Supabase)</title>
     <!-- Tailwind CSS 로드 --><script src="https://cdn.tailwindcss.com"></script>
-    <!-- 커스텀 스타일 (정렬 화살표 등) --><style>
+    <!-- 커스텀 스타일 (v12와 동일) --><style>
         .sortable-header:hover {
             background-color: #f9fafb; /* bg-gray-50 on hover */
             cursor: pointer;
@@ -30,18 +30,73 @@
             color: #ef4444; /* text-red-500 */
             font-weight: 600;
         }
+
+        /* 갤러리 버튼 스타일 */
+        .gallery-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 10;
+        }
+        .gallery-btn:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        #prevBtn { left: 10px; }
+        #nextBtn { right: 10px; }
+
+        /* 수정 모달 내 이미지 태그 */
+        .image-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: #e5e7eb; /* bg-gray-200 */
+            border-radius: 9999px; /* rounded-full */
+            padding: 4px 10px;
+            margin: 2px;
+            font-size: 14px;
+        }
+        .delete-image-btn {
+            margin-left: 8px;
+            color: #ef4444; /* text-red-500 */
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .delete-image-btn:hover {
+            color: #b91c1c; /* text-red-700 */
+        }
+
+        /* 로딩 스피너 */
+        .loader {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100">
 
     <div class="container mx-auto p-4 md:p-8">
         
-        <!-- 헤더 --><header class="mb-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <!-- 헤더 (타이틀 변경) --><header class="mb-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <h1 class="text-2xl md:text-3xl font-bold text-gray-800 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-8 h-8 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
-                안전장비 검교정 현황 (Firebase Ver.)
+                안전장비 검교정 현황 (Supabase Ver.)
             </h1>
             <!-- 검색 입력란과 신규 장비 추가 버튼 --><div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 w-full md:w-auto">
                 <input type="text" id="searchInput" placeholder="검색 (장비명, 담당자 등)" class="p-2 border border-gray-300 rounded-lg shadow-sm w-full md:w-64">
@@ -51,70 +106,47 @@
             </div>
         </header>
 
-        <!-- 테이블 컨테이너 (모바일 좌우 스크롤) --><div class="overflow-x-auto bg-white rounded-lg shadow">
+        <!-- 테이블 컨테이너 (v12와 동일) --><div class="overflow-x-auto bg-white rounded-lg shadow">
             <div class="inline-block min-w-full align-middle">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="w-16 px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                No
-                            </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                장비명<span class="sort-indicator"></span>
-                            </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                장비번호<span class="sort-indicator"></span>
-                            </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                자산번호<span class="sort-indicator"></span>
-                            </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                검교정 상태<span class="sort-indicator"></span>
-                            </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                최근 검교정일<span class="sort-indicator"></span>
-                            </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                차기 검교정일<span class="sort-indicator"></span>
-                            </th>
-                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                담당자<span class="sort-indicator"></span>
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">
-                                관리
-                            </th>
+                            <th scope="col" class="w-16 px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">No</th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">장비명<span class="sort-indicator"></span></th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">장비번호<span class="sort-indicator"></span></th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">자산번호<span class="sort-indicator"></span></th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">검교정 상태<span class="sort-indicator"></span></th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">최근 검교정일<span class="sort-indicator"></span></th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">차기 검교정일<span class="sort-indicator"></span></th>
+                            <th scope="col" class="sortable-header px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">담당자<span class="sort-indicator"></span></th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-bold text-gray-800 uppercase tracking-wider">관리</th>
                         </tr>
                     </thead>
-                    <!--
-                        ★★★ 중요 ★★★
-                        데이터는 이제 Firebase에서 실시간으로 불러옵니다.
-                        tbody는 처음엔 비어있습니다.
-                    -->
                     <tbody id="equipmentTableBody" class="bg-white divide-y divide-gray-200">
-                        <!-- Firebase에서 데이터를 불러오는 동안 잠시 보일 로딩 메시지 -->
+                        <!-- Supabase에서 데이터를 불러오는 동안 잠시 보일 로딩 메시지 -->
                         <tr>
                             <td colspan="9" class="px-6 py-10 text-center text-gray-500">
-                                Firebase 데이터베이스에서 실시간 데이터를 불러오는 중...
+                                Supabase 데이터베이스에서 실시간 데이터를 불러오는 중...
                             </td>
                         </tr>
-                        
-                        <!-- 데이터가 Firebase에서 동적으로 추가됩니다 -->
+                        <!-- 데이터가 Supabase에서 동적으로 추가됩니다 -->
                     </tbody>
                 </table>
             </div>
         </div>
         
-        <!-- 하단 안내 메시지 --><footer class="mt-4 text-center text-sm text-gray-500">
+        <!-- 하단 안내 메시지 (v12와 동일) --><footer class="mt-4 text-center text-sm text-gray-500">
             © 2025 Equipment Status Board
         </footer>
     </div>
 
-    <!-- 편집 모달 (팝업창) --><div id="editModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+    <!-- 편집 모달 (v12와 동일) --><div id="editModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
             <!-- 모달 헤더 --><div class="border-b px-6 py-4">
                 <h3 class="text-xl font-semibold text-gray-800">장비 정보 수정</h3>
             </div>
             <!-- 모달 본문 (폼) --><form id="editForm" class="p-6 space-y-4">
+                <!-- (기존 정보 입력칸 ... 변경 없음) -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="editName" class="block text-sm font-medium text-gray-700">장비명</label>
@@ -153,24 +185,39 @@
                         <input type="date" id="editNextDate" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
                     </div>
                 </div>
-                <!-- '내가 추가한 사진'을 넣는 곳 -->
+                
+                <!-- 사진 첨부 기능 (v12와 동일) -->
                 <div>
-                    <label for="editImageUrl" class="block text-sm font-medium text-gray-700">이미지 URL</label>
-                    <input type="text" id="editImageUrl" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" placeholder="https://example.com/image.png">
+                    <label class="block text-sm font-medium text-gray-700">첨부된 사진</label>
+                    <div id="currentImagesList" class="mt-1 p-2 border border-gray-200 rounded-md bg-gray-50 min-h-[40px]">
+                        <!-- 첨부된 사진 목록이 여기에 동적으로 생성됩니다 -->
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="editImageFiles" class="block text-sm font-medium text-gray-700">새 사진 추가 (다중 선택 가능)</label>
+                    <input type="file" id="editImageFiles" multiple accept="image/*" class="mt-1 block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-blue-50 file:text-blue-700
+                        hover:file:bg-blue-100">
+                    <div id="uploadStatus" class="mt-2 text-sm text-gray-600"></div>
                 </div>
             </form>
             <!-- 모달 푸터 (버튼) --><div class="bg-gray-50 px-6 py-4 flex justify-end space-x-3">
                 <button id="closeModalBtn" class="bg-white hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 border border-gray-300 rounded-lg shadow-sm">
                     취소
                 </button>
-                <button id="saveChangesBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm">
-                    저장
+                <button id="saveChangesBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-sm flex items-center">
+                    <span id="saveBtnText">저장</span>
+                    <span id="saveSpinner" class="hidden loader"></span>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 삭제(비밀번호) 모달 --><div id="passwordModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+    <!-- 삭제(비밀번호) 모달 (v12와 동일) --><div id="passwordModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-sm">
             <div class="border-b px-6 py-4">
                 <h3 class="text-xl font-semibold text-gray-800">삭제 확인</h3>
@@ -193,13 +240,18 @@
         </div>
     </div>
 
-    <!-- 이미지 보기 모달 --><div id="imageModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl">
-            <div class="p-4">
-                <img id="equipmentImage" src="" alt="장비 이미지" class="w-full h-auto rounded">
+    <!-- 이미지 갤러리 모달 (v12와 동일) --><div id="galleryModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl relative">
+            <div class="p-4 relative">
+                <img id="galleryImage" src="" alt="장비 이미지" class="w-full h-auto max-h-[80vh] object-contain rounded">
+                
+                <!-- 좌/우 넘김 버튼 -->
+                <button id="prevBtn" class="gallery-btn">◀</button>
+                <button id="nextBtn" class="gallery-btn">▶</button>
             </div>
+            <div id="galleryIndicator" class="text-center p-2 text-sm text-gray-600"></div>
             <div class="bg-gray-50 px-6 py-4 flex justify-end">
-                <button id="closeImageModalBtn" class="bg-white hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 border border-gray-300 rounded-lg shadow-sm">
+                <button id="closeGalleryModalBtn" class="bg-white hover:bg-gray-100 text-gray-700 font-medium py-2 px-4 border border-gray-300 rounded-lg shadow-sm">
                     닫기
                 </button>
             </div>
@@ -209,128 +261,96 @@
 
     <!-- 
       ★★★ 모든 JavaScript 로직 ★★★
-      Firebase SDK를 사용하기 위해 <script type="module">로 변경되었습니다.
+      Firebase SDK -> Supabase SDK로 변경
     --><script type="module">
-        // ★★★ 1. Firebase v11 (모듈형) SDK 임포트 ★★★
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { 
-            getFirestore, collection, addDoc, doc, setDoc, deleteDoc, onSnapshot, query, setLogLevel
-        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // ★★★ 1. Supabase SDK 임포트 ★★★
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
 
         
-        // ★★★ 2. Firebase 설정 ★★★
-        // 1단계에서 복사한 'firebaseConfig' 객체를 여기에 붙여넣으세요!
-        const firebaseConfig = {
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCoxUY1f_6lU6pJkNWB3GlcMS-2SKAhhM8",
-  authDomain: "equipment-546b2.firebaseapp.com",
-  projectId: "equipment-546b2",
-  storageBucket: "equipment-546b2.firebasestorage.app",
-  messagingSenderId: "93708853251",
-  appId: "1:93708853251:web:b3b7bf8d5b0c43c4232e36"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-        };
+        // ★★★ 2. Supabase 설정 ★★★
+        // 사용자님이 제공해주신 URL과 Key를 여기에 넣었습니다.
+        const SUPABASE_URL = "https://gpasyonwcednznrwjulr.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdwYXN5b253Y2VkbnpucndqdWxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI3MzgyMDcsImV4cCI6MjA3ODMxNDIwN30.eNvjtaG0QY3Ur42UkXhHdfhCUa3jABwNUWzwHAB9Vv4";
         
-        // Firebase 앱 초기화
-        let app, db, equipCollection;
+        // Supabase 클라이언트 초기화
+        let supabase;
+        const BUCKET_NAME = 'equipment_images'; // 1단계 4번에서 만든 버킷 이름
+        
         try {
-            app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            setLogLevel('Debug'); // Firebase 로그 활성화 (콘솔에서 상세 로그 확인 가능)
-            
-            // 데이터 컬렉션 참조 ('equipment'라는 이름의 '창고'를 가리킴)
-            equipCollection = collection(db, "equipment");
+            if (!SUPABASE_URL.startsWith("https") || !SUPABASE_KEY.startsWith("ey")) {
+                throw new Error("Supabase URL 또는 Key가 올바르지 않습니다. 위 변수를 확인해주세요.");
+            }
+            supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
         } catch (e) {
-            console.error("Firebase 초기화 오류:", e);
-            alert("Firebase 설정(firebaseConfig)이 올바른지 확인해주세요! 에러: " + e.message);
-            return;
+            console.error("Supabase 초기화 오류:", e);
+            alert("Supabase 설정이 올바른지 확인해주세요! 에러: " + e.message);
+            // return; // <-- ★★★ 이 부분이 오류의 원인이었습니다. 제거했습니다. ★★★
         }
 
-
-        // ★★★ 3. DOM 요소 가져오기 (v10과 동일) ★★★
+        // ★★★ 3. DOM 요소 가져오기 (v12와 동일) ★★★
         const tableBody = document.getElementById('equipmentTableBody');
         const addRowBtn = document.getElementById('addRowBtn');
         const searchInput = document.getElementById('searchInput');
-
-        // 편집 모달
         const editModal = document.getElementById('editModal');
         const closeModalBtn = document.getElementById('closeModalBtn');
         const saveChangesBtn = document.getElementById('saveChangesBtn');
-        
-        // 비밀번호 모달
+        const saveBtnText = document.getElementById('saveBtnText');
+        const saveSpinner = document.getElementById('saveSpinner');
+        const currentImagesList = document.getElementById('currentImagesList');
+        const editImageFilesInput = document.getElementById('editImageFiles');
+        const uploadStatus = document.getElementById('uploadStatus');
         const passwordModal = document.getElementById('passwordModal');
         const passwordInput = document.getElementById('passwordInput');
         const passwordError = document.getElementById('passwordError');
         const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
         const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const galleryModal = document.getElementById('galleryModal');
+        const galleryImage = document.getElementById('galleryImage');
+        const closeGalleryModalBtn = document.getElementById('closeGalleryModalBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const galleryIndicator = document.getElementById('galleryIndicator');
 
-        // 이미지 모달
-        const imageModal = document.getElementById('imageModal');
-        const equipmentImage = document.getElementById('equipmentImage');
-        const closeImageModalBtn = document.getElementById('closeImageModalBtn');
+        let currentRow = null;
+        let rowToDelete = null;
+        let currentGalleryImages = [];
+        let currentGalleryIndex = 0;
+        let imagesToDeleteOnSave = [];
+        let imagesToKeep = [];
 
-        let currentRow = null; // 편집 중인 행
-        let rowToDelete = null; // 삭제할 행
-
-
-        // --- 'No' 열 번호 자동 갱신 함수 (v10과 동일) ---
+        // ★★★ 4. 기본 헬퍼 함수 (v12와 동일) ★★★
         function updateRowNumbers() {
             if (!tableBody) return;
             const rows = tableBody.querySelectorAll('tr.data-row');
             rows.forEach((row, index) => {
                 const cell = row.querySelector('.row-number-cell');
-                if (cell) {
-                    cell.innerText = index + 1;
-                }
+                if (cell) cell.innerText = index + 1;
             });
         }
-
-        // --- '검교정 상태' 텍스트 반환 함수 (v10과 동일) ---
-        function getStatusSpan(statusText) {
-            return statusText.trim();
-        }
-
-        // --- '관리' 버튼 HTML 반환 함수 (v10과 동일) ---
+        function getStatusSpan(statusText) { return statusText.trim(); }
         function getManageButtonsHTML() {
-            let html = `
+            return `
                 <button class="edit-btn text-blue-500 hover:text-blue-700 mr-2">수정</button>
                 <button class="delete-btn text-red-500 hover:text-red-700">삭제</button>
             `;
-            return html;
         }
-
-        // --- 날짜 임박 강조 및 초기 설정 함수 (v10과 동일) ---
         function checkAndHighlightDueDates() {
             if (!tableBody) return;
             const today = new Date();
             today.setHours(0, 0, 0, 0); 
             const oneMonthLater = new Date(today);
             oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
-
             const rows = tableBody.querySelectorAll('tr.data-row');
             rows.forEach(row => {
                 const nextDueDateCell = row.cells[6]; 
                 const nextDueDateText = nextDueDateCell.innerText.trim();
-
                 row.classList.remove('highlight-due-date');
                 const existingSpan = nextDueDateCell.querySelector('.next-due-date-text');
-                if (existingSpan) {
-                    nextDueDateCell.innerText = existingSpan.innerText; 
-                }
+                if (existingSpan) nextDueDateCell.innerText = existingSpan.innerText; 
                 
                 if (nextDueDateText && nextDueDateText !== '-' && !isNaN(new Date(nextDueDateText))) {
                     const nextDueDate = new Date(nextDueDateText);
                     nextDueDate.setHours(0, 0, 0, 0);
-
                     if (nextDueDate >= today && nextDueDate <= oneMonthLater) {
                         row.classList.add('highlight-due-date');
                         nextDueDateCell.innerHTML = `<span class="next-due-date-text">${nextDueDateText}</span>`;
@@ -339,18 +359,13 @@ const app = initializeApp(firebaseConfig);
             });
         }
         
-        // ★★★ 4. [제거] localStorage 저장/불러오기 함수 ★★★
-        // saveDataToLocalStorage() 와 loadDataFromLocalStorage() 함수가 제거되었습니다.
-        // 대신 아래의 Firebase 실시간 리스너(onSnapshot)가 그 역할을 합니다.
-
-
-        // ★★★ 5. [신규] Firebase 데이터 실시간 렌더링 함수 ★★★
-        // Firestore에서 데이터를 가져와(정렬 후) 테이블을 다시 그리는 함수
+        // ★★★ 5. [수정] Supabase 데이터 실시간 렌더링 함수 ★★★
+        // Supabase에서 데이터를 가져와(정렬 후) 테이블을 다시 그리는 함수
         function renderDataToTable(equipmentData) {
-            // (참고: JS에서 이름순으로 정렬. Firestore orderBy를 쓰지 않음)
+            // (참고: JS에서 이름순으로 정렬.)
             equipmentData.sort((a, b) => a.name.localeCompare(b.name, 'ko'));
 
-            tableBody.innerHTML = ''; // 테이블을 깨끗이 비웁니다.
+            tableBody.innerHTML = ''; 
             
             if (equipmentData.length === 0) {
                 tableBody.innerHTML = `<tr><td colspan="9" class="px-6 py-10 text-center text-gray-500">
@@ -359,10 +374,12 @@ const app = initializeApp(firebaseConfig);
             }
 
             equipmentData.forEach(item => {
-                // 저장된 데이터로 테이블 행(row)을 다시 만듭니다.
-                // ★★★ data-id 속성에 Firebase 문서 ID를 저장하는 것이 핵심 ★★★
+                // 'imageUrls'가 배열인지 확인 (없으면 빈 배열로)
+                const imageUrls = Array.isArray(item.imageUrls) ? item.imageUrls : [];
+
                 const newRowHTML = `
-                    <tr class="data-row" data-id="${item.id}" data-image-url="${item.imageUrl || ''}">
+                    <!-- ★ data-id, data-image-urls 속성으로 데이터 저장 -->
+                    <tr class="data-row" data-id="${item.id}" data-image-urls='${JSON.stringify(imageUrls)}'>
                         <td class="row-number-cell px-6 py-4 text-sm text-gray-500 text-center"></td>
                         <td class="image-trigger-cell px-6 py-4 text-sm font-medium text-gray-900 text-center">
                             ${item.name}
@@ -383,16 +400,13 @@ const app = initializeApp(firebaseConfig);
                 tableBody.insertAdjacentHTML('beforeend', newRowHTML);
             });
             
-            // 데이터 렌더링 후, 번호 매기기 및 날짜 강조 실행
             updateRowNumbers();
             checkAndHighlightDueDates();
         }
 
-
-        // --- 테이블 정렬 기능 ---
+        // 6. 테이블 정렬 기능 (v12와 동일)
         document.querySelectorAll('th.sortable-header').forEach(header => {
             header.addEventListener('click', function() {
-                // ... (v10과 동일한 정렬 로직) ...
                 if (!tableBody) return;
                 const tbody = tableBody;
                 const column = this.cellIndex;
@@ -421,59 +435,160 @@ const app = initializeApp(firebaseConfig);
                         return bText.localeCompare(aText, 'ko', { numeric: true });
                     }
                 });
-
                 rows.forEach(row => tbody.appendChild(row));
                 updateRowNumbers();
                 checkAndHighlightDueDates();
-                
-                // ★★★ 6. [제거] saveDataToLocalStorage() 호출 제거 ★★★
-                // (정렬은 임시적인 UI 변경일 뿐, DB에 순서를 저장하지 않음)
             });
         });
 
-        // --- 편집 모달 팝업창 관련 (v10과 동일) ---
-        // 모달 열기 함수
+        // 7. 편집 모달 팝업창 관련 (v12와 동일)
+        function setupImageTagDelete(button) {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = e.target.dataset.url;
+                const tag = e.target.parentElement;
+                imagesToDeleteOnSave.push(url);
+                imagesToKeep = imagesToKeep.filter(imgUrl => imgUrl !== url);
+                tag.style.textDecoration = 'line-through'; 
+                e.target.style.display = 'none';
+            });
+        }
         function openModal(row) {
             if (!editModal) return;
             currentRow = row;
             const cells = row.getElementsByTagName('td');
             
+            // 텍스트 정보
             document.getElementById('editName').value = cells[1].innerText;
             document.getElementById('editNumber').value = cells[2].innerText;
             document.getElementById('editAsset').value = cells[3].innerText;
             document.getElementById('editStatus').value = cells[4].innerText.trim();
             document.getElementById('editLastDate').value = cells[5].innerText;
-            
             const nextDueDateSpan = cells[6].querySelector('.next-due-date-text');
             document.getElementById('editNextDate').value = nextDueDateSpan ? nextDueDateSpan.innerText : cells[6].innerText;
-            
             document.getElementById('editManager').value = cells[7].innerText;
 
-            // 이미지 URL 로드 (v10과 동일)
-            document.getElementById('editImageUrl').value = row.dataset.imageUrl || '';
+            // 이미지 목록 초기화
+            currentImagesList.innerHTML = '';
+            imagesToKeep = [];
+            imagesToDeleteOnSave = [];
+            editImageFilesInput.value = '';
+            uploadStatus.innerHTML = '';
 
+            let imageUrls = [];
+            try {
+                imageUrls = JSON.parse(row.dataset.imageUrls || '[]');
+            } catch (e) {
+                console.error("이미지 URL 파싱 오류:", e);
+                imageUrls = [];
+            }
+            imagesToKeep = [...imageUrls]; 
+
+            // 기존 이미지 목록 렌더링 (v12와 동일)
+            if (imageUrls.length > 0) {
+                imageUrls.forEach(url => {
+                    let fileName;
+                    try {
+                        const urlObj = new URL(url);
+                        const path = decodeURIComponent(urlObj.pathname.split('/').pop());
+                        fileName = path.split('?')[0];
+                    } catch (e) {
+                        fileName = "image.jpg";
+                    }
+                    const imageTagHTML = `
+                        <span class="image-tag" data-url="${url}">
+                            ${fileName.length > 20 ? '...' + fileName.slice(-20) : fileName} 
+                            <span class="delete-image-btn" data-url="${url}"> (X) </span>
+                        </span>
+                    `;
+                    currentImagesList.insertAdjacentHTML('beforeend', imageTagHTML);
+                });
+                currentImagesList.querySelectorAll('.delete-image-btn').forEach(setupImageTagDelete);
+            } else {
+                currentImagesList.innerText = "첨부된 사진이 없습니다.";
+            }
             editModal.classList.remove('hidden');
         }
-
-        // 모달 닫기 함수
         function closeModal() {
             if (editModal) editModal.classList.add('hidden');
             currentRow = null;
+            saveBtnText.innerText = '저장';
+            saveSpinner.classList.add('hidden');
+            saveChangesBtn.disabled = false;
         }
 
-        // ★★★ 7. [수정] 모달의 '저장' 버튼 클릭 이벤트 (Firebase) ★★★
+        // ★★★ 8. [수정] 모달 '저장' 버튼 (Supabase) ★★★
         if (saveChangesBtn) {
-            // 'await'를 사용하기 위해 'async' 함수로 변경
-            saveChangesBtn.addEventListener('click', async function() {
-                if (currentRow) {
-                    // ★★★ data-id에서 Firebase 문서 ID 가져오기 ★★★
-                    const docId = currentRow.dataset.id;
-                    if (!docId) {
-                        console.error("오류: 이 행의 문서 ID(data-id)를 찾을 수 없습니다.");
-                        return;
+            saveChangesBtn.addEventListener('click', async function(e) {
+                e.preventDefault(); 
+                if (!currentRow) return;
+
+                saveBtnText.innerText = '저장 중...';
+                saveSpinner.classList.remove('hidden');
+                saveChangesBtn.disabled = true;
+
+                const docId = currentRow.dataset.id;
+                if (!docId) {
+                    alert("오류: 이 행의 문서 ID(data-id)를 찾을 수 없습니다.");
+                    closeModal();
+                    return;
+                }
+
+                let finalImageUrls = [...imagesToKeep]; // (X) 안 누른 기존 URL
+
+                try {
+                    // --- 1. 새 파일 업로드 (Storage) ---
+                    const files = editImageFilesInput.files;
+                    if (files.length > 0) {
+                        uploadStatus.innerText = `0/${files.length} 파일 업로드 중...`;
+                        
+                        const uploadPromises = [];
+                        for (let i = 0; i < files.length; i++) {
+                            const file = files[i];
+                            // 파일 경로: [문서ID]/[파일명] (UUID 대신 심플하게)
+                            const storagePath = `${docId}/${file.name}`;
+                            
+                            // ★ Supabase 업로드 (upload)
+                            uploadPromises.push(
+                                supabase.storage.from(BUCKET_NAME).upload(storagePath, file, {
+                                    cacheControl: '3600',
+                                    upsert: true // 덮어쓰기 허용
+                                }).then(result => {
+                                    if (result.error) throw result.error;
+                                    // ★ 업로드 완료 후 공개 URL 가져오기
+                                    const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(storagePath);
+                                    return data.publicUrl;
+                                })
+                            );
+                            uploadStatus.innerText = `${i+1}/${files.length} 파일 업로드 중...`;
+                        }
+                        
+                        const newImageUrls = await Promise.all(uploadPromises);
+                        finalImageUrls = finalImageUrls.concat(newImageUrls); // 새 URL 추가
+                        uploadStatus.innerText = "새 파일 업로드 완료!";
                     }
-                    
-                    // 저장할 데이터 객체 (v10과 동일)
+
+                    // --- 2. 삭제할 파일 제거 (Storage) ---
+                    if (imagesToDeleteOnSave.length > 0) {
+                        const deletePaths = [];
+                        imagesToDeleteOnSave.forEach(url => {
+                            try {
+                                // ★ Public URL에서 Storage 'path' 추출
+                                const path = new URL(url).pathname.split(`/${BUCKET_NAME}/`)[1];
+                                if(path) deletePaths.push(path);
+                            } catch (e) {
+                                // ★★★ [오류 수정] console.warn(string, variable, object) -> console.warn(string + variable, object) ★★★
+                                console.warn("삭제할 수 없는 URL입니다: " + url, e);
+                            }
+                        });
+                        
+                        if(deletePaths.length > 0) {
+                            // ★ Supabase 파일 삭제 (remove)
+                            await supabase.storage.from(BUCKET_NAME).remove(deletePaths);
+                        }
+                    }
+
+                    // --- 3. 최종 데이터 객체 생성 (Firestore) ---
                     const updatedData = {
                         name: document.getElementById('editName').value,
                         number: document.getElementById('editNumber').value,
@@ -482,116 +597,133 @@ const app = initializeApp(firebaseConfig);
                         lastDate: document.getElementById('editLastDate').value,
                         nextDate: document.getElementById('editNextDate').value,
                         manager: document.getElementById('editManager').value,
-                        imageUrl: document.getElementById('editImageUrl').value
+                        imageUrls: finalImageUrls // ★ 최종 URL 배열
                     };
                     
-                    try {
-                        // ★★★ Firestore 문서에 데이터 업데이트 (setDoc) ★★★
-                        const docRef = doc(db, "equipment", docId);
-                        await setDoc(docRef, updatedData); // (setDoc은 문서를 덮어씁니다)
-                        
-                        // 성공하면 모달 닫기
-                        closeModal();
-                        // (onSnapshot 리스너가 알아서 화면을 갱신하므로,
-                        //  v10에 있던 DOM 수동 조작 및 saveDataToLocalStorage() 호출이 필요 없음)
-                    } catch (e) {
-                        console.error("문서 업데이트 오류: ", e);
-                        alert("데이터 저장 중 오류가 발생했습니다: " + e.message);
-                    }
-                }
-            });
-        }
-
-        // 모달의 '취소' 버튼 클릭 이벤트 (v10과 동일)
-        if (closeModalBtn) {
-            closeModalBtn.addEventListener('click', closeModal);
-        }
-
-        // (편집 모달) 바깥 어두운 배경 클릭 시 닫기 (v10과 동일)
-        if (editModal) {
-            editModal.addEventListener('click', function(e) {
-                if (e.target === editModal) {
+                    // --- 4. Supabase DB 업데이트 (update) ---
+                    const { error } = await supabase
+                        .from('equipment')
+                        .update(updatedData)
+                        .eq('id', docId); // id가 docId와 일치하는 행
+                    
+                    if (error) throw error;
+                    
                     closeModal();
+
+                } catch (e) {
+                    console.error("저장 오류: ", e);
+                    alert("데이터 저장 중 오류가 발생했습니다: " + e.message);
+                    saveBtnText.innerText = '저장';
+                    saveSpinner.classList.add('hidden');
+                    saveChangesBtn.disabled = false;
                 }
             });
         }
+        
+        if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+        if (editModal) editModal.addEventListener('click', (e) => { if (e.target === editModal) closeModal(); });
 
-
-        // --- 비밀번호 모달 관련 (v10과 동일) ---
+        // 9. 비밀번호 모달 관련 (v12와 동일)
         function openPasswordModal(row) {
             rowToDelete = row;
             passwordInput.value = '';
             passwordError.innerText = '';
             passwordModal.classList.remove('hidden');
         }
-
         function closePasswordModal() {
             passwordModal.classList.add('hidden');
             rowToDelete = null;
         }
 
-        // ★★★ 8. [수정] '삭제 확인' 버튼 클릭 이벤트 (Firebase) ★★★
+        // ★★★ 10. [수정] '삭제 확인' 버튼 (Supabase) ★★★
         if (confirmDeleteBtn) {
-            // 'await'를 사용하기 위해 'async' 함수로 변경
             confirmDeleteBtn.addEventListener('click', async function() {
-                if (passwordInput.value === '0000') {
-                    if (rowToDelete) {
-                        // ★★★ data-id에서 Firebase 문서 ID 가져오기 ★★★
-                        const docId = rowToDelete.dataset.id;
-                        if (!docId) {
-                            console.error("오류: 이 행의 문서 ID(data-id)를 찾을 수 없습니다.");
-                            closePasswordModal();
-                            return;
-                        }
-
-                        try {
-                            // ★★★ Firestore 문서 삭제 (deleteDoc) ★★★
-                            const docRef = doc(db, "equipment", docId);
-                            await deleteDoc(docRef);
-                            
-                            // (onSnapshot 리스너가 알아서 화면을 갱신하므로,
-                            //  v10에 있던 rowToDelete.remove() 및 saveData...() 호출이 필요 없음)
-                            
-                        } catch (e) {
-                            console.error("문서 삭제 오류: ", e);
-                            alert("데이터 삭제 중 오류가 발생했습니다: " + e.message);
-                        }
-                    }
-                    closePasswordModal(); // 성공/실패 여부와 관계없이 모달 닫기
-                } else {
+                if (passwordInput.value !== '0000') {
                     passwordError.innerText = '비밀번호가 틀렸습니다.';
+                    return;
+                }
+                
+                if (rowToDelete) {
+                    const docId = rowToDelete.dataset.id;
+                    if (!docId) {
+                        alert("오류: 삭제할 행의 ID를 찾을 수 없습니다.");
+                        closePasswordModal();
+                        return;
+                    }
+
+                    try {
+                        // --- 1. DB에서 이미지 목록 확보 ---
+                        let imageUrls = [];
+                        try {
+                            imageUrls = JSON.parse(rowToDelete.dataset.imageUrls || '[]');
+                        } catch(e) {}
+
+                        // --- 2. Storage의 모든 관련 파일 삭제 ---
+                        if (imageUrls.length > 0) {
+                            const deletePaths = [];
+                            imageUrls.forEach(url => {
+                                try {
+                                    const path = new URL(url).pathname.split(`/${BUCKET_NAME}/`)[1];
+                                    if(path) deletePaths.push(path);
+                                } catch (e) {
+                                    // ★★★ [오류 수정] console.warn(string, variable, object) -> console.warn(string + variable, object) ★★★
+                                    console.warn("삭제할 수 없는 URL입니다: " + url, e);
+                                }
+                            });
+                            if(deletePaths.length > 0) {
+                                await supabase.storage.from(BUCKET_NAME).remove(deletePaths);
+                            }
+                        }
+
+                        // --- 3. Supabase DB 문서 삭제 (delete) ---
+                        const { error } = await supabase
+                            .from('equipment')
+                            .delete()
+                            .eq('id', docId);
+                        
+                        if (error) throw error;
+                        
+                        closePasswordModal();
+                        
+                    } catch (e) {
+                        console.error("삭제 오류: ", e);
+                        alert("데이터 삭제 중 오류가 발생했습니다: " + e.message);
+                        closePasswordModal();
+                    }
                 }
             });
         }
+        
+        if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closePasswordModal);
 
-        if (cancelDeleteBtn) {
-            cancelDeleteBtn.addEventListener('click', closePasswordModal);
+        // 11. 갤러리 모달 관련 (v12와 동일)
+        function updateGalleryView() {
+            if (currentGalleryImages.length === 0) return;
+            galleryImage.src = currentGalleryImages[currentGalleryIndex];
+            galleryIndicator.innerText = `${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
+            prevBtn.style.display = (currentGalleryIndex === 0) ? 'none' : 'block';
+            nextBtn.style.display = (currentGalleryIndex === currentGalleryImages.length - 1) ? 'none' : 'block';
         }
+        if (closeGalleryModalBtn) closeGalleryModalBtn.addEventListener('click', () => galleryModal.classList.add('hidden'));
+        if (galleryModal) galleryModal.addEventListener('click', (e) => { if (e.target === galleryModal) galleryModal.classList.add('hidden'); });
+        prevBtn.addEventListener('click', () => {
+            if (currentGalleryIndex > 0) {
+                currentGalleryIndex--;
+                updateGalleryView();
+            }
+        });
+        nextBtn.addEventListener('click', () => {
+            if (currentGalleryIndex < currentGalleryImages.length - 1) {
+                currentGalleryIndex++;
+                updateGalleryView();
+            }
+        });
 
-        // --- 이미지 모달 관련 (v10과 동일) ---
-        if (closeImageModalBtn) {
-            closeImageModalBtn.addEventListener('click', function() {
-                imageModal.classList.add('hidden');
-                equipmentImage.src = ''; 
-            });
-        }
-        if (imageModal) {
-            imageModal.addEventListener('click', function(e) {
-                if (e.target === imageModal) {
-                    imageModal.classList.add('hidden');
-                    equipmentImage.src = '';
-                }
-            });
-        }
-
-
-        // ★★★ 9. [수정] '신규 장비 추가' 버튼 클릭 이벤트 (Firebase) ★★★
+        // ★★★ 12. [수정] '신규 장비 추가' 버튼 (Supabase) ★★★
         if (addRowBtn) {
-            // 'await'를 사용하기 위해 'async' 함수로 변경
             addRowBtn.addEventListener('click', async function() {
                 if (!tableBody) return;
                 
-                // Firestore에 저장할 새 데이터 객체
                 const newItem = {
                     name: "(장비명 입력)",
                     number: "(장비번호 입력)",
@@ -600,15 +732,15 @@ const app = initializeApp(firebaseConfig);
                     lastDate: new Date().toISOString().slice(0, 10),
                     nextDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().slice(0, 10),
                     manager: "(담당자 입력)",
-                    imageUrl: ""
+                    imageUrls: [], // ★ 빈 배열로 초기화
+                    // createdAt은 DB에서 자동으로 생성됨
                 };
 
                 try {
-                    // ★★★ Firestore에 새 문서 추가 (addDoc) ★★★
-                    await addDoc(equipCollection, newItem);
-                    
-                    // (onSnapshot 리스너가 알아서 화면을 갱신하므로,
-                    //  v10에 있던 newRowHTML, insertAdjacentHTML, saveData...() 호출이 필요 없음)
+                    // ★ Supabase DB에 새 문서 추가 (insert)
+                    const { error } = await supabase.from('equipment').insert([newItem]);
+                    if (error) throw error;
+                    // (실시간 리스너가 화면 갱신)
                 } catch (e) {
                     console.error("새 문서 추가 오류: ", e);
                     alert("데이터 추가 중 오류가 발생했습니다: " + e.message);
@@ -616,38 +748,36 @@ const app = initializeApp(firebaseConfig);
             });
         }
 
-        // --- 테이블 영역 클릭 이벤트 (v10과 동일) ---
+        // 13. 테이블 영역 클릭 이벤트 (v12와 동일)
         if (tableBody) {
             tableBody.addEventListener('click', function(e) {
-                // 수정 버튼 클릭 (최우선)
+                // 수정 버튼 클릭
                 const editButton = e.target.closest('.edit-btn');
                 if (editButton) {
                     const row = editButton.closest('tr');
-                    if (row) {
-                        openModal(row);
-                    }
-                    return; // 다른 클릭 이벤트 방지
+                    if (row) openModal(row);
+                    return;
                 }
-
-                // 삭제 버튼 클릭 (최우선)
+                // 삭제 버튼 클릭
                 const deleteButton = e.target.closest('.delete-btn');
                 if (deleteButton) {
                     const row = deleteButton.closest('tr');
-                    if (row) {
-                        openPasswordModal(row);
-                    }
-                    return; // 다른 클릭 이벤트 방지
+                    if (row) openPasswordModal(row);
+                    return;
                 }
-
-                // '장비명' 셀 클릭 (사진 보기)
+                // '장비명' 셀 클릭 (갤러리 열기)
                 const imageTriggerCell = e.target.closest('.image-trigger-cell');
                 if (imageTriggerCell) {
                     const clickedRow = imageTriggerCell.closest('tr.data-row');
                     if (clickedRow) {
-                        const imageUrl = clickedRow.dataset.imageUrl;
-                        if (imageUrl && imageUrl.trim() !== '') {
-                            equipmentImage.src = imageUrl;
-                            imageModal.classList.remove('hidden');
+                        try {
+                            currentGalleryImages = JSON.parse(clickedRow.dataset.imageUrls || '[]');
+                        } catch (e) { currentGalleryImages = []; }
+                        
+                        if (currentGalleryImages.length > 0) {
+                            currentGalleryIndex = 0;
+                            updateGalleryView();
+                            galleryModal.classList.remove('hidden');
                         }
                     }
                     return;
@@ -655,7 +785,7 @@ const app = initializeApp(firebaseConfig);
             });
         }
 
-        // --- 검색 기능 (v10과 동일) ---
+        // 14. 검색 기능 (v12와 동일)
         if (searchInput) {
             searchInput.addEventListener('keyup', function() {
                 const searchTerm = this.value.toLowerCase(); 
@@ -678,37 +808,52 @@ const app = initializeApp(firebaseConfig);
             }
         }
 
-        // ★★★ 10. [신규] 페이지 로드 시 Firebase 실시간 리스너 시작 ★★★
-        function listenForDataChanges() {
-            // 'equipment' 컬렉션에 대한 실시간 리스너(onSnapshot) 설정
-            const q = query(equipCollection);
-            
-            onSnapshot(q, (snapshot) => {
-                const equipmentData = [];
-                // 모든 문서를 순회하며 데이터와 ID를 배열에 추가
-                snapshot.forEach(doc => {
-                    equipmentData.push({ id: doc.id, ...doc.data() });
-                });
-                
-                // 데이터 배열을 기반으로 테이블을 다시 그립니다.
-                renderDataToTable(equipmentData);
-                
-                // 검색 중이었을 수도 있으니, 검색 필터를 다시 적용
-                if (searchInput.value) {
-                    searchInput.dispatchEvent(new Event('keyup'));
-                }
+        // ★★★ 15. [수정] Supabase 실시간 리스너 시작 ★★★
+        
+        // 데이터 로딩 함수
+        async function loadDataFromSupabase() {
+            // Supabase 초기화가 실패했으면, 여기서 멈춤
+            if (!supabase) {
+                tableBody.innerHTML = `<tr><td colspan="9" class="px-6 py-10 text-center text-red-500">
+                    Supabase가 올바르게 초기화되지 않았습니다. SUPABASE_URL과 SUPABASE_KEY를 확인해주세요.
+                </td></tr>`;
+                return;
+            }
 
-            }, (error) => {
-                // 리스너 설정 중 오류 발생 시
-                console.error("Firebase 실시간 리스너 오류: ", error);
+            const { data, error } = await supabase
+                .from('equipment')
+                .select('*');
+            
+            if (error) {
+                console.error("Supabase 데이터 로드 오류: ", error);
                 tableBody.innerHTML = `<tr><td colspan="9" class="px-6 py-10 text-center text-red-500">
                     데이터베이스 연결에 실패했습니다. (오류: ${error.message})
                 </td></tr>`;
-            });
+            } else {
+                renderDataToTable(data);
+                // 검색 중이었을 수도 있으니, 검색 필터 다시 적용
+                if (searchInput.value) {
+                    searchInput.dispatchEvent(new Event('keyup'));
+                }
+            }
         }
 
+        // 실시간 변경 감지 및 적용
+        supabase.channel('public:equipment')
+            .on('postgres_changes', { 
+                event: '*', // INSERT, UPDATE, DELETE 모두 감지
+                schema: 'public', 
+                table: 'equipment' 
+            }, (payload) => {
+                // 데이터에 변경이 생기면, 테이블 전체를 다시 로드
+                // (더 최적화할 수 있지만, 이 방식이 가장 간단하고 정확합니다)
+                console.log('실시간 변경 감지:', payload);
+                loadDataFromSupabase();
+            })
+            .subscribe();
+
         // --- 페이지 로드 시 초기화 ---
-        listenForDataChanges(); // ★ Firebase 실시간 리스너 시작
+        loadDataFromSupabase(); // ★ 첫 데이터 로드
 
     </script>
 
