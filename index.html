@@ -46,7 +46,8 @@
         <div class="mb-4 flex items-center justify-between">
             <!-- 4. 검색기능 추가 -->
             <div class="relative w-full max-w-xs">
-                <input type="text" id="search-input" placeholder="장비명, 장비번호, 담당자 검색..." class="block w-full border border-gray-300 rounded-lg shadow-sm p-2 pl-10 text-black">
+                <!-- '담당자' 삭제 후 placeholder 텍스트 수정 -->
+                <input type="text" id="search-input" placeholder="장비명, 장비번호, 자산번호 검색..." class="block w-full border border-gray-300 rounded-lg shadow-sm p-2 pl-10 text-black">
                 <svg class="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                 </svg>
@@ -82,7 +83,7 @@
                         </th>
                         <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="equipment_number" class="flex items-center">
-                                장비번호
+                                장비관리번호
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
@@ -92,15 +93,22 @@
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
+                        <!-- '검교정 주기' 추가 -->
                         <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
-                            <button data-sort="status" class="flex items-center">
-                                검교정 상태
+                            <button data-sort="calibration_cycle" class="flex items-center">
+                                검교정 주기
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
                         <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             <button data-sort="last_calibration_date" class="flex items-center">
-                                최근 검교정일
+                                검교정일
+                                <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
+                            </button>
+                        </th>
+                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
+                            <button data-sort="status" class="flex items-center">
+                                검교정결과
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
@@ -110,12 +118,7 @@
                                 <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
                             </button>
                         </th>
-                        <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
-                            <button data-sort="manager" class="flex items-center">
-                                담당자
-                                <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" /></svg>
-                            </button>
-                        </th>
+                        <!-- '담당자' 삭제 -->
                         <th scope="col" class="py-3 px-4 text-center text-sm font-bold text-black uppercase tracking-wider">
                             관리
                         </th>
@@ -125,7 +128,8 @@
                 <tbody id="equipment-tbody" class="divide-y divide-gray-200">
                     <!-- 로딩 또는 데이터 없음 메시지 -->
                     <tr>
-                        <td colspan="10" class="py-4 px-4 text-center text-black">데이터를 불러오는 중입니다...</td>
+                        <!-- '담당자' 삭제로 colspan="9"로 수정 -->
+                        <td colspan="9" class="py-4 px-4 text-center text-black">데이터를 불러오는 중입니다...</td>
                     </tr>
                 </tbody>
             </table>
@@ -144,33 +148,35 @@
                         <input type="text" id="name" required class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
                     </div>
                     <div>
-                        <label for="equipment_number" class="block text-sm font-medium text-black">장비번호</label>
+                        <label for="equipment_number" class="block text-sm font-medium text-black">장비관리번호</label>
                         <input type="text" id="equipment_number" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
                     </div>
                     <div>
                         <label for="asset_number" class="block text-sm font-medium text-black">자산번호</label>
                         <input type="text" id="asset_number" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
                     </div>
+                     <!-- '검교정 주기' 추가 -->
+                    <div>
+                        <label for="calibration_cycle" class="block text-sm font-medium text-black">검교정 주기</label>
+                        <input type="text" id="calibration_cycle" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
+                    </div>
+                    <div>
+                        <label for="last_calibration_date" class="block text-sm font-medium text-black">검교정일</label>
+                        <input type="date" id="last_calibration_date" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
+                    </div>
                     <div>
                         <!-- 3. 검교정 상태 (적합/부적합) -->
-                        <label for="status" class="block text-sm font-medium text-black">검교정 상태</label>
+                        <label for="status" class="block text-sm font-medium text-black">검교정결과</label>
                         <select id="status" required class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black bg-white">
                             <option value="적합">적합</option>
                             <option value="부적합">부적합</option>
                         </select>
                     </div>
                     <div>
-                        <label for="last_calibration_date" class="block text-sm font-medium text-black">최근 검교정일</label>
-                        <input type="date" id="last_calibration_date" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
-                    </div>
-                    <div>
                         <label for="next_calibration_date" class="block text-sm font-medium text-black">차기 검교정일</label>
                         <input type="date" id="next_calibration_date" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
                     </div>
-                    <div class="md:col-span-2">
-                        <label for="manager" class="block text-sm font-medium text-black">담당자</label>
-                        <input type="text" id="manager" class="mt-1 block w-full border border-gray-300 rounded-lg shadow-sm p-2 text-black">
-                    </div>
+                    <!-- '담당자' 삭제 -->
                 </div>
                 <div class="mt-6 flex justify-end gap-4">
                     <button type="button" id="modal-close-btn" class="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded-lg">
@@ -250,10 +256,29 @@
         const { createClient } = supabase;
         const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ... (Supabase 설정 가이드 주석은 동일) ...
         // -----------------------------------------------------------------
         // 2. Supabase 설정 가이드 (중요!)
-        // ... (내용 동일) ...
+        // 
+        // 이 코드가 작동하려면 Supabase 데이터베이스와 스토리지를 설정해야 합니다.
+        // 
+        // 1. Supabase 테이블 생성 (`equipment`)
+        //    - 'Table Editor' > 'New table'
+        //    - Name: `equipment`
+        //    - **RLS 비활성화** (Authentication > Policies > `equipment` 테이블 > Disable RLS)
+        //    - Columns (열) 추가:
+        //      - `name` (text, non-nullable)
+        //      - `equipment_number` (text, nullable)
+        //      - `asset_number` (text, nullable)
+        //      - `calibration_cycle` (text, nullable)  <-- 새로 추가
+        //      - `status` (text, non-nullable)
+        //      - `last_calibration_date` (date, nullable)
+        //      - `next_calibration_date` (date, nullable)
+        //      - `image_url` (text, nullable)
+        // 
+        // 2. Supabase 스토리지 버킷 생성 (`equipment-images`)
+        //    - 'Storage' > 'New bucket'
+        //    - Name: `equipment-images`
+        //    - **Public bucket: 'On' (체크)**
         // -----------------------------------------------------------------
 
 
@@ -320,27 +345,30 @@
                 const name = item.name?.toLowerCase() || '';
                 const equipNum = item.equipment_number?.toLowerCase() || '';
                 const assetNum = item.asset_number?.toLowerCase() || '';
-                const manager = item.manager?.toLowerCase() || '';
-                const status = item.status?.toLowerCase() || ''; // 5. 검색기능 확장
-                const lastDate = item.last_calibration_date || ''; // 5. 검색기능 확장
-                const nextDate = item.next_calibration_date || ''; // 5. 검색기능 확장
+                // 'manager' 삭제, 'calibration_cycle' 추가
+                const cycle = item.calibration_cycle?.toLowerCase() || '';
+                const status = item.status?.toLowerCase() || ''; 
+                const lastDate = item.last_calibration_date || ''; 
+                const nextDate = item.next_calibration_date || ''; 
 
                 return name.includes(currentSearchTerm) ||
                        equipNum.includes(currentSearchTerm) ||
                        assetNum.includes(currentSearchTerm) ||
-                       manager.includes(currentSearchTerm) ||
-                       status.includes(currentSearchTerm) || // 5. 검색기능 확장
-                       lastDate.includes(currentSearchTerm) || // 5. 검색기능 확장
-                       nextDate.includes(currentSearchTerm); // 5. 검색기능 확장
+                       cycle.includes(currentSearchTerm) || // 'cycle' 검색 추가
+                       status.includes(currentSearchTerm) || 
+                       lastDate.includes(currentSearchTerm) || 
+                       nextDate.includes(currentSearchTerm);
             });
 
             if (equipmentData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-black">등록된 장비가 없습니다. '+ 신규 장비 추가' 버튼을 눌러 추가하세요.</td></tr>`;
+                // colspan="9"로 수정
+                tbody.innerHTML = `<tr><td colspan="9" class="py-4 px-4 text-center text-black">등록된 장비가 없습니다. '+ 신규 장비 추가' 버튼을 눌러 추가하세요.</td></tr>`;
                 return;
             }
 
             if (filteredData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-black">검색 결과가 없습니다.</td></tr>`;
+                 // colspan="9"로 수정
+                tbody.innerHTML = `<tr><td colspan="9" class="py-4 px-4 text-center text-black">검색 결과가 없습니다.</td></tr>`;
                 return;
             }
 
@@ -388,15 +416,17 @@
                     </td>
                     <td class="py-3 px-4 text-sm text-black text-center">${item.equipment_number || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center">${item.asset_number || ''}</td>
+                    <!-- '검교정 주기' 추가 -->
+                    <td class="py-3 px-4 text-sm text-black text-center">${item.calibration_cycle || ''}</td>
+                    <td class="py-3 px-4 text-sm text-black text-center">${item.last_calibration_date || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center">
                         <!-- 1. 검교정 상태 글씨 검정색으로 변경 -->
                         <span class="text-sm font-semibold text-black">
                             ${item.status}
                         </span>
                     </td>
-                    <td class="py-3 px-4 text-sm text-black text-center">${item.last_calibration_date || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center ${nextDateClass}">${item.next_calibration_date || ''}</td>
-                    <td class="py-3 px-4 text-sm text-black text-center">${item.manager || ''}</td>
+                    <!-- '담당자' 삭제 -->
                     <td class="py-3 px-4 text-sm text-black text-center">
                         <!-- 2. 수정 버튼 초록색 (text-green-600) -->
                         <button data-id="${item.id}" data-action="edit" class="text-green-600 hover:text-green-900 font-medium mr-3">수정</button>
@@ -437,10 +467,11 @@
             document.getElementById('name').value = item.name;
             document.getElementById('equipment_number').value = item.equipment_number;
             document.getElementById('asset_number').value = item.asset_number;
+            document.getElementById('calibration_cycle').value = item.calibration_cycle; // 'calibration_cycle' 추가
             document.getElementById('status').value = item.status;
             document.getElementById('last_calibration_date').value = item.last_calibration_date;
             document.getElementById('next_calibration_date').value = item.next_calibration_date;
-            document.getElementById('manager').value = item.manager;
+            // 'manager' 삭제
 
             modalTitle.textContent = '장비 정보 수정';
             openModal(formModal);
@@ -557,10 +588,11 @@
                     name: document.getElementById('name').value,
                     equipment_number: document.getElementById('equipment_number').value || null,
                     asset_number: document.getElementById('asset_number').value || null,
+                    calibration_cycle: document.getElementById('calibration_cycle').value || null, // 'calibration_cycle' 추가
                     status: document.getElementById('status').value,
                     last_calibration_date: document.getElementById('last_calibration_date').value || null,
                     next_calibration_date: document.getElementById('next_calibration_date').value || null,
-                    manager: document.getElementById('manager').value || null,
+                    // 'manager' 삭제
                 };
 
                 let error;
@@ -662,7 +694,7 @@
             // --- 초기 데이터 로드 ---
             if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
                 showNotification('Supabase URL과 Key를 설정해야 합니다. 스크립트 상단의 설정 가이드를 확인하세요.', 'error');
-                if(tbody) tbody.innerHTML = `<tr><td colspan="10" class="py-4 px-4 text-center text-red-600 font-bold">Supabase가 설정되지 않았습니다. 코드 내의 가이드를 확인해주세요.</td></tr>`;
+                if(tbody) tbody.innerHTML = `<tr><td colspan="9" class="py-4 px-4 text-center text-red-600 font-bold">Supabase가 설정되지 않았습니다. 코드 내의 가이드를 확인해주세요.</td></tr>`;
                 return;
             }
             fetchEquipment();
