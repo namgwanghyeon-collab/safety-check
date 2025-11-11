@@ -57,23 +57,22 @@
             table td {
                 display: block;
                 width: 100%;
-                /* [재수정] 사용자의 피드백을 반영하여 다시 우측 정렬로 변경 (흰 공간 채우기) */
                 text-align: right; 
-                /* [재수정] 라벨(::before)을 위한 공간을 50% -> 40%로 줄여 값(value) 공간 확보 */
-                padding-left: 40%; /* 라벨을 위한 공간 확보 (50% -> 40%) */
+                /* [최종 수정] 라벨 35% / 값 65% 비율로 조정 */
+                padding-left: 35%; /* 라벨을 위한 공간 확보 (40% -> 35%) */
                 position: relative;
                 padding-top: 0.25rem;
                 padding-bottom: 0.25rem;
                 border: none;
                 white-space: normal; /* 모바일에서 줄바꿈 허용 */
-                /* [수정] 1. 글씨 크기 키움 (sm -> base) */
                 font-size: 1rem; 
             }
             table td:before {
                 content: attr(data-label); /* JS에서 설정할 data-label 속성값 */
                 position: absolute;
                 left: 0.5rem; /* p-2 */
-                width: calc(40% - 1rem); /* 50% -> 40% 너비로 변경 */
+                /* [최종 수정] 라벨 35% / 값 65% 비율로 조정 */
+                width: calc(35% - 1rem); /* 40% -> 35% 너비로 변경 */
                 text-align: left;
                 font-weight: 600; /* font-semibold */
                 color: #000;
