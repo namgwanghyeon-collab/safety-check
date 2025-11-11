@@ -57,10 +57,10 @@
             table td {
                 display: block;
                 width: 100%;
-                /* [수정] 1. 우측 정렬 -> 좌측 정렬로 변경 */
                 /* [재수정] 사용자의 피드백을 반영하여 다시 우측 정렬로 변경 (흰 공간 채우기) */
                 text-align: right; 
-                padding-left: 50%; /* 라벨을 위한 공간 확보 */
+                /* [재수정] 라벨(::before)을 위한 공간을 50% -> 40%로 줄여 값(value) 공간 확보 */
+                padding-left: 40%; /* 라벨을 위한 공간 확보 (50% -> 40%) */
                 position: relative;
                 padding-top: 0.25rem;
                 padding-bottom: 0.25rem;
@@ -73,7 +73,7 @@
                 content: attr(data-label); /* JS에서 설정할 data-label 속성값 */
                 position: absolute;
                 left: 0.5rem; /* p-2 */
-                width: calc(50% - 1rem); /* 50% 너비에서 양쪽 패딩 제외 */
+                width: calc(40% - 1rem); /* 50% -> 40% 너비로 변경 */
                 text-align: left;
                 font-weight: 600; /* font-semibold */
                 color: #000;
