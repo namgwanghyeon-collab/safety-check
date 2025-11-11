@@ -57,7 +57,7 @@
             table td {
                 display: block;
                 width: 100%;
-                text-align: right; 
+                text-align: left; /* [수정] 1. 'right'에서 'left'로 변경하여 좌측 정렬 */ 
                 /* [최종 수정] 라벨 35% / 값 65% 비율로 조정 */
                 padding-left: 35%; /* 라벨을 위한 공간 확보 (40% -> 35%) */
                 position: relative;
@@ -537,6 +537,9 @@
                 tr.className = 'hover:bg-gray-50'; // 데스크탑용 호버 효과
                 
                 const nextDateClass = getNextDateClass(item.next_calibration_date);
+                
+                // [수정] 2. 모바일/웹 UI 색상 복원 (적합/부적합)
+                const statusClass = item.status === '적합' ? 'text-green-700' : (item.status === '부적합' ? 'text-red-700' : 'text-black');
 
                 // [중요] 모바일 반응형을 위해 data-label 속성 추가
                 tr.innerHTML = `
@@ -549,7 +552,7 @@
                     <td class="py-3 px-4 text-sm text-black text-center" data-label="검교정 주기">${item.calibration_cycle || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center" data-label="검교정일">${item.last_calibration_date || ''}</td>
                     <td class="py-3 px-4 text-sm text-black text-center" data-label="검교정결과">
-                        <span class="text-sm font-semibold text-black">
+                        <span class="text-sm font-semibold ${statusClass}">
                             ${item.status}
                         </span>
                     </td>
